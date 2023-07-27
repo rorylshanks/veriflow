@@ -1,0 +1,4 @@
+FROM node
+WORKDIR /appdata
+
+ENTRYPOINT npm run start
