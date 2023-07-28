@@ -122,6 +122,15 @@ function saturateRoute(proxyFrom, proxyTo, copyHeaders) {
                   protocol: "http",
                   tls: {}
                 },
+                headers: {
+                  request: {
+                    set: {
+                      "Host": [
+                        "{http.reverse_proxy.upstream.hostport}"
+                      ]
+                    }
+                  }
+                },
                 upstreams: [
                   {
                     dial: proxyTo
@@ -161,11 +170,19 @@ function saturateAllRoutesFromConfig(config) {
           "{http.reverse_proxy.header.X-Veriflow-User-Id}"
         ]
       }
-      var saturatedRoute = saturateRoute(fromHostname, toHostname,copyHeaders)
+      if (route.claims_headers) {
+        var headersArray = Object.keys(route.claims_headers)
+        for (var header of headersArray) {
+          copyHeaders[header] = [
+            `{http.reverse_proxy.header.${header}}`
+          ]
+        }
+      }
+      var saturatedRoute = saturateRoute(fromHostname, toHostname, copyHeaders)
       renderedRoutes.push(saturatedRoute)
-      log.debug({"message": "Added route", route})
+      // log.debug({ "message": "Added route", route })
     } catch (err) {
-      //console.error(err)
+      console.error(err)
       log.error({ message: "Failed to parse route", route: route, error: err })
     }
   }

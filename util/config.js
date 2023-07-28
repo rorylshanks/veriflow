@@ -23,12 +23,12 @@ async function reloadConfig() {
     reloadCaddy.generateCaddyConfig()
 }
 
-async function generateCaddyConfig() {
-
-}
-
 function getConfig() {
     return currentConfig
+}
+
+function getRouteForHostname(hostname) {
+    return currentConfig.policy.find(element => element.from.includes(hostname))
 }
 
 async function getIdpConfig() {
@@ -40,7 +40,8 @@ async function getIdpConfig() {
         try {
             log.debug("Cache miss, returning results from Redis")
             await redisClient.connect()
-            var idpResponse = await redisClient.get('veriflow:users');
+            var idpResponse = JSON.parse(await redisClient.get('veriflow:users'))
+            idpRedisResponse.put("veriflow:users", idpResponse)
             await redisClient.disconnect();
             return idpResponse
         } catch (error) {
@@ -51,8 +52,15 @@ async function getIdpConfig() {
     }
 }
 
+async function getUserById(id) {
+    var config = await getIdpConfig()
+    return config[id]
+}
+
 export {
     reloadConfig,
     getConfig,
-    getIdpConfig
+    getIdpConfig,
+    getRouteForHostname,
+    getUserById
 };
