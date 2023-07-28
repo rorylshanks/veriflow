@@ -1,25 +1,6 @@
 version: '3'
-volumes:
-  veriflow_db:
 
 services:
-  db:
-    image: mysql:5.7
-    restart: always
-    environment:
-      MYSQL_DATABASE: 'veriflow'
-      MYSQL_ROOT_PASSWORD: 'root'
-    ports:
-      - '3306:3306'
-    expose:
-      - '3306'
-    volumes:
-      - veriflow_db:/var/lib/mysql
-  adminer:
-    image: adminer
-    restart: always
-    ports:
-      - '8080:8080'
   redis:
     image: redis
     restart: always
@@ -35,10 +16,4 @@ services:
     volumes:
       - $PWD:/appdata
     environment:
-      MYSQL_HOST: db
       REDIS_HOST: redis
-  mailhog:
-    image: mailhog/mailhog
-    ports:
-      - 1025:1025 # smtp server
-      - 8025:8025 # web ui
