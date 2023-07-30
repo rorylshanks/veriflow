@@ -1,10 +1,6 @@
 import pino from 'pino';
 
-const log = pino({
-    transport: {
-      target: 'pino-pretty'
-    },
-  });
+const log = pino();
 
 log.level = 10
 

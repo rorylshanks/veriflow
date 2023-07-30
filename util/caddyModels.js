@@ -284,7 +284,7 @@ async function updateCaddyConfig(config) {
   });
 
   if (response.status === 200) {
-    console.log('Successfully updated Caddy config');
+    log.info('Successfully updated Caddy config');
     return response.data;
   } else {
     throw new Error('Failed to update Caddy config, response status: ' + response.status);
