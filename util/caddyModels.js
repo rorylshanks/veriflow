@@ -189,9 +189,13 @@ function saturateAllRoutesFromConfig(config) {
       var saturatedRoute = saturateRoute(fromHostname, toHostname, route)
       renderedRoutes.push(saturatedRoute)
       // log.debug({ "message": "Added route", route })
-    } catch (err) {
-      console.error(err)
-      // log.error({ message: "Failed to parse route", route: route, error: err })
+    } catch (error) {
+      var errorObject = {
+        message: error.message,
+        name: error.name,
+        stack: error.stack
+    };
+      log.error({ message: "Failed to parse route", route: route, error: errorObject })
     }
   }
   return renderedRoutes
@@ -263,33 +267,27 @@ async function generateCaddyConfig() {
       }
     }
   }
-  await writeFile("caddy.json", JSON.stringify(superConfig))
   try {
     await updateCaddyConfig(superConfig)
   } catch (error) {
-    log.error({message: "Failed to update running caddy config", error: error})
+    log.error({ message: "Failed to update running caddy config", error: error })
   }
 
 }
 
 async function updateCaddyConfig(config) {
-  try {
-    const url = 'http://localhost:2019/load';
-    const response = await axios.post(url, config, {
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    });
-
-    if (response.status === 200) {
-      console.log('Successfully updated Caddy config');
-      return response.data;
-    } else {
-      throw new Error('Failed to update Caddy config, response status: ' + response.status);
+  const url = 'http://localhost:2019/load';
+  const response = await axios.post(url, config, {
+    headers: {
+      'Content-Type': 'application/json'
     }
-  } catch (error) {
-    // console.error('Error updating Caddy config:', error);
-    // throw error;
+  });
+
+  if (response.status === 200) {
+    console.log('Successfully updated Caddy config');
+    return response.data;
+  } else {
+    throw new Error('Failed to update Caddy config, response status: ' + response.status);
   }
 }
 
