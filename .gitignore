@@ -131,6 +131,7 @@ dist
 
 
 config.yaml
+config.yaml.*
 Caddyfile
 caddy.json
 output.json

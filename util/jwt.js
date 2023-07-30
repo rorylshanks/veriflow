@@ -1,21 +1,29 @@
 import jwt from 'jsonwebtoken';
 import { getConfig } from '../util/config.js';
+import log from './logging.js';
 
 // Function to create a JWT from a JSON object
 async function createJWT(jsonPayload) {
     const currentConfig = getConfig()
-    const token = jwt.sign(jsonPayload, currentConfig.signing_key);
-    return token;
+    try {
+        var key = Buffer.from(currentConfig.signing_key, 'base64')
+        const token = jwt.sign(jsonPayload, key, { algorithm: currentConfig.signing_key_algorithm || "RS256" });
+        return token;
+    } catch (error) {
+        log.error({ message: "Failed to sign JWT", context: { payload: JSON.stringify(jsonPayload), error: error.message } })
+    }
+
 }
 
 // Function to decode and validate a JWT
 async function decodeJWT(token) {
     try {
         const currentConfig = getConfig()
-        const decoded = jwt.verify(token, currentConfig.signing_key);
+        var key = Buffer.from(currentConfig.signing_key, 'base64')
+        const decoded = jwt.verify(token, key);
         return decoded;
-    } catch (err) {
-        console.log(err);
+    } catch (error) {
+        log.error({ message: "Failed to decode JWT", context: { jwt: token, error: error.message } });
         return null;
     }
 }

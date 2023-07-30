@@ -36,7 +36,8 @@
     "pino": "^8.14.2",
     "pino-http": "^8.3.3",
     "pino-pretty": "^10.2.0",
-    "redis": "^4.6.7"
+    "redis": "^4.6.7",
+    "timestring": "^7.0.0"
   },
   "devDependencies": {
     "nodemon": "^3.0.1"

@@ -269,6 +269,7 @@ async function generateCaddyConfig() {
   }
   try {
     await updateCaddyConfig(superConfig)
+    writeFile("caddy.json", JSON.stringify(superConfig))
   } catch (error) {
     log.error({ message: "Failed to update running caddy config", error: error })
   }

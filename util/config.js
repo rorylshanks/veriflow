@@ -6,22 +6,27 @@ import Cache from 'cache';
 import redis from 'redis';
 import reloadCaddy from './caddyModels.js';
 
-const redisClient = redis.createClient({
-    url: 'redis://' + process.env.REDIS_HOST
-});
+let currentConfig = yaml.load(fsSync.readFileSync('config.yaml', 'utf8'))
 
+const redisClient = redis.createClient({
+    url: 'redis://' + getConfig().redis_host + ":" + getConfig().redis_port
+});
+redisClient.connect()
 redisClient.on('error', (err) => {
     log.error('Redis error: ', err);
 });
 
 let idpRedisResponse = new Cache(60 * 1000);
 
-let currentConfig = yaml.load(fsSync.readFileSync('config.yaml', 'utf8'))
-
 async function reloadConfig() {
-    log.debug("Reloading configuration")
-    currentConfig = yaml.load(await fs.readFile('config.yaml', 'utf8'));
-    reloadCaddy.generateCaddyConfig()
+    try {
+        log.debug("Reloading configuration")
+        currentConfig = yaml.load(await fs.readFile('config.yaml', 'utf8'));
+        reloadCaddy.generateCaddyConfig()
+    } catch (error) {
+        log.error({ message: "Failed to reload config", context: {error: error.message, stack: error.stack}})
+    }
+
 }
 
 function getConfig() {
@@ -40,10 +45,8 @@ async function getIdpConfig() {
     } else {
         try {
             log.debug("Cache miss, returning results from Redis")
-            await redisClient.connect()
             var idpResponse = JSON.parse(await redisClient.get('veriflow:users'))
             idpRedisResponse.put("veriflow:users", idpResponse)
-            await redisClient.disconnect();
             return idpResponse
         } catch (error) {
             log.error(error)

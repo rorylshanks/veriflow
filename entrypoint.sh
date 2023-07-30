@@ -2,6 +2,6 @@
 
 /usr/bin/caddy run --config=/etc/caddy.json &
 sleep 2
-npx nodemon app.js &
+npx node app.js &
 
 wait
