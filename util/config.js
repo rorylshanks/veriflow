@@ -1,5 +1,6 @@
 import yaml from 'js-yaml';
 import fs from 'fs/promises';
+import fsSync from 'fs';
 import log from './logging.js';
 import Cache from 'cache';
 import redis from 'redis';
@@ -15,7 +16,7 @@ redisClient.on('error', (err) => {
 
 let idpRedisResponse = new Cache(60 * 1000);
 
-let currentConfig
+let currentConfig = yaml.load(fsSync.readFileSync('config.yaml', 'utf8'))
 
 async function reloadConfig() {
     log.debug("Reloading configuration")

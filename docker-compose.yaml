@@ -13,7 +13,9 @@ services:
     restart: always
     ports:
       - '3000:3000'
+      - '2080:2080'
     volumes:
       - $PWD:/appdata
+      - /secrets:/secrets
     environment:
       REDIS_HOST: redis

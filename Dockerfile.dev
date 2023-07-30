@@ -1,4 +1,9 @@
+FROM caddy:2.7-alpine AS caddy
+
 FROM node
+COPY --from=caddy /usr/bin/caddy /usr/bin/caddy
+COPY caddyfile-blank.json /etc/caddy.json
+COPY entrypoint.sh /entrypoint.sh
 WORKDIR /appdata
 
-ENTRYPOINT bash -c "npx nodemon app.js"
+ENTRYPOINT /entrypoint.sh

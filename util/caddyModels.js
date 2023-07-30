@@ -1,21 +1,44 @@
-/* var hostMatcher = "test.com"
-
-var copyHeaders = {
-  "X-Veriflow-User-Id": [
-    "{http.reverse_proxy.header.X-Veriflow-User-Id}"
-  ]
-}
-
-var proxyTo = "postman-echo.com:443"
-
- */
-
 import { getConfig } from "./config.js"
-import * as url from 'url';
 import log from './logging.js';
 import { writeFile } from "fs/promises";
+import axios from 'axios';
 
-function saturateRoute(proxyFrom, proxyTo, copyHeaders) {
+function saturateRoute(proxyFrom, proxyTo, route) {
+  var copyHeaders = {
+    "X-Veriflow-User-Id": [
+      "{http.reverse_proxy.header.X-Veriflow-User-Id}"
+    ]
+  }
+  if (route.claims_headers) {
+    var headersArray = Object.keys(route.claims_headers)
+    for (var header of headersArray) {
+      copyHeaders[header] = [
+        `{http.reverse_proxy.header.${header}}`
+      ]
+    }
+
+  }
+  if (route.remove_request_headers) {
+    var requestHeadersToDelete = route.remove_request_headers
+  }
+  var requestHeadersToSet = {
+    "Host": [
+      "{http.reverse_proxy.upstream.hostport}"
+    ]
+  }
+  if (route.set_request_headers) {
+    for (var header of Object.keys(route.set_request_headers)) {
+      requestHeadersToSet[header] = [route.set_request_headers[header]]
+    }
+  }
+  var tlsOptions = {}
+  if (route.tls_client_cert_file && route.tls_client_key_file) {
+    tlsOptions["client_certificate_file"] = route.tls_client_cert_file
+    tlsOptions["client_certificate_key_file"] = route.tls_client_key_file
+  }
+  if (route.tls_skip_verify) {
+    tlsOptions[insecure_skip_verify] = true
+  }
   var routeModel = {
     match: [
       {
@@ -120,15 +143,12 @@ function saturateRoute(proxyFrom, proxyTo, copyHeaders) {
                 handler: "reverse_proxy",
                 transport: {
                   protocol: "http",
-                  tls: {}
+                  tls: tlsOptions
                 },
                 headers: {
                   request: {
-                    set: {
-                      "Host": [
-                        "{http.reverse_proxy.upstream.hostport}"
-                      ]
-                    }
+                    delete: requestHeadersToDelete || [],
+                    set: requestHeadersToSet || []
                   }
                 },
                 upstreams: [
@@ -165,36 +185,56 @@ function saturateAllRoutesFromConfig(config) {
       }
       var toHostname = `${toURL.hostname}:${toPort}`
       var fromHostname = fromURL.hostname
-      var copyHeaders = {
-        "X-Veriflow-User-Id": [
-          "{http.reverse_proxy.header.X-Veriflow-User-Id}"
-        ]
-      }
-      if (route.claims_headers) {
-        var headersArray = Object.keys(route.claims_headers)
-        for (var header of headersArray) {
-          copyHeaders[header] = [
-            `{http.reverse_proxy.header.${header}}`
-          ]
-        }
-      }
-      var saturatedRoute = saturateRoute(fromHostname, toHostname, copyHeaders)
+
+      var saturatedRoute = saturateRoute(fromHostname, toHostname, route)
       renderedRoutes.push(saturatedRoute)
       // log.debug({ "message": "Added route", route })
     } catch (err) {
       console.error(err)
-      log.error({ message: "Failed to parse route", route: route, error: err })
+      // log.error({ message: "Failed to parse route", route: route, error: err })
     }
   }
   return renderedRoutes
 }
 
 async function generateCaddyConfig() {
+  log.debug("Generating new caddy config")
   var config = getConfig()
   var routes = saturateAllRoutesFromConfig(config)
+  var serviceUrl = new URL(config.service_url)
+  var defaultRoute = {
+    "match": [
+      {
+        "host": [
+          serviceUrl.hostname
+        ]
+      }
+    ],
+    "handle": [
+      {
+        "handler": "subroute",
+        "routes": [
+          {
+            "handle": [
+              {
+                "handler": "reverse_proxy",
+                "upstreams": [
+                  {
+                    "dial": "localhost:3000"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "terminal": true
+  }
+  routes.push(defaultRoute)
   var superConfig = {
     "admin": {
-      "disabled": true
+      "disabled": false
     },
     "logging": {
       "logs": {
@@ -224,7 +264,33 @@ async function generateCaddyConfig() {
     }
   }
   await writeFile("caddy.json", JSON.stringify(superConfig))
+  try {
+    await updateCaddyConfig(superConfig)
+  } catch (error) {
+    log.error({message: "Failed to update running caddy config", error: error})
+  }
 
+}
+
+async function updateCaddyConfig(config) {
+  try {
+    const url = 'http://localhost:2019/load';
+    const response = await axios.post(url, config, {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+
+    if (response.status === 200) {
+      console.log('Successfully updated Caddy config');
+      return response.data;
+    } else {
+      throw new Error('Failed to update Caddy config, response status: ' + response.status);
+    }
+  } catch (error) {
+    // console.error('Error updating Caddy config:', error);
+    // throw error;
+  }
 }
 
 export default {

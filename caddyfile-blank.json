@@ -1,0 +1,46 @@
+{
+  "admin": {
+    "disabled": false
+  },
+  "logging": {
+    "logs": {
+      "default": {
+        "writer": {
+          "output": "stdout"
+        },
+        "encoder": {
+          "format": "json"
+        }
+      }
+    }
+  },
+  "apps": {
+    "http": {
+      "http_port": 2080,
+      "https_port": 2443,
+      "servers": {
+        "srv0": {
+          "listen": [
+            ":2080"
+          ],
+          "routes": [
+          ],
+          "automatic_https": {
+            "disable": true
+          },
+          "trusted_proxies": {
+            "ranges": [
+              "192.168.0.0/16",
+              "172.16.0.0/12",
+              "10.0.0.0/8",
+              "127.0.0.1/8",
+              "fd00::/8",
+              "::1"
+            ],
+            "source": "static"
+          }
+        }
+      }
+    }
+  }
+}

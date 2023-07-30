@@ -11,4 +11,9 @@ async function main() {
 
 main()
 
+process.on('SIGUSR1', async () => {
+    log.info("Reloading config due to SIGUSR1");
+    await reloadConfig()
+});
+
 import './lib/http.js';
