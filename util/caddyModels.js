@@ -78,7 +78,8 @@ function saturateRoute(proxyFrom, proxyTo, route) {
                   redirectBasePath + "/verify"
                 ]
               }
-            ]
+            ],
+            terminal: true
           },
           {
             handle: [
@@ -237,13 +238,6 @@ async function generateCaddyConfig() {
     "terminal": true
   }
   var defaultRoute = {
-    "match": [
-      {
-        "host": [
-          "*"
-        ]
-      }
-    ],
     "handle": [
       {
         "handler": "subroute",

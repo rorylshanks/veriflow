@@ -11,6 +11,5 @@ COPY lib lib
 COPY util util
 COPY app.js app.js
 COPY caddyfile-blank.json /etc/caddy.json
-COPY entrypoint.sh /entrypoint.sh
 
 ENTRYPOINT ["/usr/bin/supervisord", "-n", "-c", "/etc/supervisord.conf"]
