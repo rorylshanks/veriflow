@@ -1,0 +1,7 @@
+sequenceDiagram
+    User->>+Veriflow: Attempts to access Internal Service
+    Veriflow->>+User: Redirects user to IdP
+    User->>+IdP: Signs in to IdP
+    IdP->>+Veriflow: Verify signed in user with JWT
+    Veriflow->>+User: Sets session cookie
+    User-->>+Internal Service: Access Internal Service

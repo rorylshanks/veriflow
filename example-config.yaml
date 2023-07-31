@@ -1,0 +1,35 @@
+---
+auth_listen_port: 3000
+data_listen_port: 2080
+service_url: https://veriflow.codemo.re
+cookie_secret: "ThisIsAFakeCookieSecret"
+redis_host: redis
+redis_port: 6379
+idp_client_id: 00000000-1111-2222-3333-444444444444
+idp_client_secret: "FAKEFAKEFAKEaingaigaeW9eic4ok3oojietheeFAKEFAKEFAKE"
+idp_tenant_id: 00000000-1111-2222-3333-444444444444
+idp_provider: msgraph
+idp_provider_scope: openid email profile
+idp_provider_user_id_claim: oid
+idp_provider_url: https://login.microsoftonline.com/00000000-1111-2222-3333-444444444444/v2.0
+idp_refresh_directory_interval: 10m
+idp_refresh_directory_timeout: 5m
+metrics_address: 0.0.0.0:9090
+signing_key: "BASE64_ENCODED_RSA_PRIVATE_KEY"
+redirect_base_path: /.veriflow
+jwks_path: /.well-known/veriflow/jwks.json
+policy:
+- title: test
+  from: http://httpbin-test.localhost
+  to: https://postman-echo.com
+  claims_headers:
+    X-Pomerium-Claim-Email: mail
+    X-Pomerium-Jwt-Assertion: jwt
+  allowed_groups:
+  - All Users
+  cors_allow_preflight: true
+  remove_request_headers:
+    - X-Forwarded-For
+    - X-Veriflow-User-Id
+  set_request_headers:
+    X-Test-Header: ThisIsATestHeader

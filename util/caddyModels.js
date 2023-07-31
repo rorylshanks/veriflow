@@ -4,6 +4,7 @@ import { writeFile } from "fs/promises";
 import axios from 'axios';
 
 function saturateRoute(proxyFrom, proxyTo, route) {
+  var config = getConfig()
   var copyHeaders = {
     "X-Veriflow-User-Id": [
       "{http.reverse_proxy.header.X-Veriflow-User-Id}"
@@ -38,7 +39,7 @@ function saturateRoute(proxyFrom, proxyTo, route) {
   if (route.tls_skip_verify) {
     tlsOptions[insecure_skip_verify] = true
   }
-  var redirectBasePath = getConfig().redirect_base_path || "/.veriflow"
+  var redirectBasePath = config.redirect_base_path || "/.veriflow"
   var routeModel = {
     match: [
       {
@@ -103,7 +104,7 @@ function saturateRoute(proxyFrom, proxyTo, route) {
                 },
                 upstreams: [
                   {
-                    dial: "localhost:3000"
+                    dial: "localhost:" + config.auth_listen_port
                   }
                 ]
               }
@@ -120,7 +121,7 @@ function saturateRoute(proxyFrom, proxyTo, route) {
                         handler: "reverse_proxy",
                         upstreams: [
                           {
-                            dial: "localhost:3000"
+                            dial: "localhost:" + config.auth_listen_port
                           }
                         ]
                       }
@@ -224,7 +225,7 @@ async function generateCaddyConfig() {
                 "handler": "reverse_proxy",
                 "upstreams": [
                   {
-                    "dial": "localhost:3000"
+                    "dial": "localhost:" + config.auth_listen_port
                   }
                 ]
               }
@@ -254,12 +255,12 @@ async function generateCaddyConfig() {
     },
     "apps": {
       "http": {
-        "http_port": 2080,
+        "http_port": config.data_listen_port,
         "https_port": 2443,
         "servers": {
           "srv0": {
             "listen": [
-              ":2080"
+              ":" + config.data_listen_port
             ],
             "routes": routes
           }
