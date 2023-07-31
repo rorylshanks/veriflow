@@ -6,7 +6,9 @@ import Cache from 'cache';
 import redis from 'redis';
 import reloadCaddy from './caddyModels.js';
 
-let currentConfig = yaml.load(fsSync.readFileSync('config.yaml', 'utf8'))
+let configFileLocation = process.env.CONFIG_FILE || "config.yaml"
+
+let currentConfig = yaml.load(fsSync.readFileSync(configFileLocation, 'utf8'))
 
 const redisClient = redis.createClient({
     url: 'redis://' + getConfig().redis_host + ":" + getConfig().redis_port
@@ -21,7 +23,10 @@ let idpRedisResponse = new Cache(60 * 1000);
 async function reloadConfig() {
     try {
         log.debug("Reloading configuration")
-        currentConfig = yaml.load(await fs.readFile('config.yaml', 'utf8'));
+        var tempConfig = yaml.load(await fs.readFile(configFileLocation, 'utf8'));
+        if (tempConfig) {
+            currentConfig = tempConfig
+        }
         reloadCaddy.generateCaddyConfig()
     } catch (error) {
         log.error({ message: "Failed to reload config", context: {error: error.message, stack: error.stack}})

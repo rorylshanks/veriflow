@@ -195,7 +195,7 @@ function saturateAllRoutesFromConfig(config) {
         message: error.message,
         name: error.name,
         stack: error.stack
-    };
+      };
       log.error({ message: "Failed to parse route", route: route, error: errorObject })
     }
   }
@@ -207,7 +207,7 @@ async function generateCaddyConfig() {
   var config = getConfig()
   var routes = saturateAllRoutesFromConfig(config)
   var serviceUrl = new URL(config.service_url)
-  var defaultRoute = {
+  var serviceRoute = {
     "match": [
       {
         "host": [
@@ -236,6 +236,39 @@ async function generateCaddyConfig() {
     ],
     "terminal": true
   }
+  var defaultRoute = {
+    "match": [
+      {
+        "host": [
+          "*"
+        ]
+      }
+    ],
+    "handle": [
+      {
+        "handler": "subroute",
+        "routes": [
+          {
+            "handle": [
+              {
+                "body": "<!DOCTYPE html><html><head><title>404 Site Not Found | Veriflow</title></head><body><h1>404 Site Not Found</h1><p>The requested site cannot be found in the Veriflow configuration. Please ask your administrator.</p></body></html>",
+                "close": true,
+                "handler": "static_response",
+                "status_code": 404,
+                "headers": {
+                  "Content-Type": [
+                    "text/html"
+                  ]
+                }
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "terminal": true
+  }
+  routes.push(serviceRoute)
   routes.push(defaultRoute)
   var superConfig = {
     "admin": {
