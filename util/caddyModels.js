@@ -16,7 +16,6 @@ function saturateRoute(proxyFrom, proxyTo, route) {
         `{http.reverse_proxy.header.${header}}`
       ]
     }
-
   }
   if (route.remove_request_headers) {
     var requestHeadersToDelete = route.remove_request_headers
@@ -39,6 +38,7 @@ function saturateRoute(proxyFrom, proxyTo, route) {
   if (route.tls_skip_verify) {
     tlsOptions[insecure_skip_verify] = true
   }
+  var redirectBasePath = getConfig().redirect_base_path || "/.veriflow"
   var routeModel = {
     match: [
       {
@@ -99,7 +99,7 @@ function saturateRoute(proxyFrom, proxyTo, route) {
                 },
                 rewrite: {
                   method: "GET",
-                  uri: "/.veriflow/verify"
+                  uri: redirectBasePath + "/verify"
                 },
                 upstreams: [
                   {
@@ -132,7 +132,7 @@ function saturateRoute(proxyFrom, proxyTo, route) {
             match: [
               {
                 path: [
-                  "/.veriflow/verify"
+                  redirectBasePath + "/verify"
                 ]
               }
             ]
