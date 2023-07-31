@@ -1,9 +1,10 @@
 FROM caddy:2.7-alpine AS caddy
 
 FROM node
+RUN apt update && apt upgrade -y && apt install -y ca-certificates supervisor
 COPY --from=caddy /usr/bin/caddy /usr/bin/caddy
+COPY docker/supervisord.conf /etc/supervisord.conf
 COPY caddyfile-blank.json /etc/caddy.json
-COPY entrypoint.sh /entrypoint.sh
 WORKDIR /appdata
 
-ENTRYPOINT /entrypoint.sh
+ENTRYPOINT ["/usr/bin/supervisord", "-n", "-c", "/etc/supervisord.conf"]

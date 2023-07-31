@@ -55,6 +55,34 @@ function saturateRoute(proxyFrom, proxyTo, route) {
           {
             handle: [
               {
+                handler: "subroute",
+                routes: [
+                  {
+                    handle: [
+                      {
+                        handler: "reverse_proxy",
+                        upstreams: [
+                          {
+                            dial: "localhost:" + config.auth_listen_port
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ],
+            match: [
+              {
+                path: [
+                  redirectBasePath + "/verify"
+                ]
+              }
+            ]
+          },
+          {
+            handle: [
+              {
                 handle_response: [
                   {
                     match: {
@@ -100,40 +128,12 @@ function saturateRoute(proxyFrom, proxyTo, route) {
                 },
                 rewrite: {
                   method: "GET",
-                  uri: redirectBasePath + "/verify"
+                  uri: redirectBasePath + "/verify?"
                 },
                 upstreams: [
                   {
                     dial: "localhost:" + config.auth_listen_port
                   }
-                ]
-              }
-            ]
-          },
-          {
-            handle: [
-              {
-                handler: "subroute",
-                routes: [
-                  {
-                    handle: [
-                      {
-                        handler: "reverse_proxy",
-                        upstreams: [
-                          {
-                            dial: "localhost:" + config.auth_listen_port
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              }
-            ],
-            match: [
-              {
-                path: [
-                  redirectBasePath + "/verify"
                 ]
               }
             ]
@@ -295,7 +295,10 @@ async function generateCaddyConfig() {
             "listen": [
               ":" + config.data_listen_port
             ],
-            "routes": routes
+            "routes": routes,
+            "logs": {
+              "default_logger_name": "default"
+            }
           }
         }
       }
