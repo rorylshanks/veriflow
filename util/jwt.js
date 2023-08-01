@@ -7,7 +7,12 @@ async function createJWT(jsonPayload) {
     const currentConfig = getConfig()
     try {
         var key = Buffer.from(currentConfig.signing_key, 'base64')
-        const token = jwt.sign(jsonPayload, key, { algorithm: currentConfig.signing_key_algorithm || "RS256" });
+        const token = jwt.sign(jsonPayload, key, { 
+            algorithm: currentConfig.signing_key_algorithm || "RS256",
+            keyid: getConfig().kid_override || "0",
+            expiresIn: "1h",
+            issuer: getConfig().service_url
+        });
         return token;
     } catch (error) {
         log.error({ message: "Failed to sign JWT", context: { payload: JSON.stringify(jsonPayload), error: error.message } })
