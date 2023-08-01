@@ -234,7 +234,7 @@ async function generateCaddyConfig() {
       {
         "header": {
           "X-Veriflow-Request": [
-            "yes"
+            "true"
           ]
         }
       }

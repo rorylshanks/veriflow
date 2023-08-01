@@ -10,6 +10,6 @@ RUN npm i
 COPY lib lib
 COPY util util
 COPY app.js app.js
-COPY caddyfile-blank.json /etc/caddy.json
+COPY caddyfile-blank.json caddy.json
 
 ENTRYPOINT ["/usr/bin/supervisord", "-n", "-c", "/etc/supervisord.conf"]
