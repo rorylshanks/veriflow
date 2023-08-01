@@ -31,6 +31,11 @@ function saturateRoute(proxyFrom, proxyTo, route) {
       requestHeadersToSet[header] = [route.set_request_headers[header]]
     }
   }
+  requestHeadersToSet = {
+    "X-Veriflow-Request": [
+      "true"
+    ]
+  }
   var tlsOptions = {}
   if (route.tls_client_cert_file && route.tls_client_key_file) {
     tlsOptions["client_certificate_file"] = route.tls_client_cert_file
@@ -207,6 +212,36 @@ async function generateCaddyConfig() {
   log.debug("Generating new caddy config")
   var config = getConfig()
   var routes = saturateAllRoutesFromConfig(config)
+  var circuitBreakerRoute = {
+    "handle": [
+      {
+        "handler": "subroute",
+        "routes": [
+          {
+            "handle": [
+              {
+                "body": "<!DOCTYPE html><html><head><title>Bad Request | Veriflow</title></head><body><h1>400 Bad Request</h1><p>We detected a loop in the veriflow configuration. Please ask your administrator.</p></body></html>",
+                "close": true,
+                "handler": "static_response",
+                "status_code": 400
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "match": [
+      {
+        "header": {
+          "X-Veriflow-Request": [
+            "yes"
+          ]
+        }
+      }
+    ]
+  }
+  routes.unshift(circuitBreakerRoute)
+
   var serviceUrl = new URL(config.service_url)
   var serviceRoute = {
     "match": [
