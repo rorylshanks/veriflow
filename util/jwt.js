@@ -7,11 +7,12 @@ async function createJWT(jsonPayload) {
     const currentConfig = getConfig()
     try {
         var key = Buffer.from(currentConfig.signing_key, 'base64')
+        var serviceUrl = new URL(currentConfig.service_url)
         const token = jwt.sign(jsonPayload, key, { 
             algorithm: currentConfig.signing_key_algorithm || "RS256",
-            keyid: getConfig().kid_override || "0",
+            keyid: currentConfig.kid_override || "0",
             expiresIn: "1h",
-            issuer: getConfig().service_url
+            issuer: serviceUrl.hostname
         });
         return token;
     } catch (error) {
