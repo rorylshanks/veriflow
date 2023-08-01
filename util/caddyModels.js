@@ -23,18 +23,16 @@ function saturateRoute(proxyFrom, proxyTo, route) {
   }
   var requestHeadersToSet = {
     "Host": [
-      "{http.reverse_proxy.upstream.hostport}"
+      "{http.reverse_proxy.upstream.host}"
+    ],
+    "X-Veriflow-Request": [
+      "true"
     ]
   }
   if (route.set_request_headers) {
     for (var header of Object.keys(route.set_request_headers)) {
       requestHeadersToSet[header] = [route.set_request_headers[header]]
     }
-  }
-  requestHeadersToSet = {
-    "X-Veriflow-Request": [
-      "true"
-    ]
   }
   var tlsOptions = {}
   if (route.tls_client_cert_file && route.tls_client_key_file) {
