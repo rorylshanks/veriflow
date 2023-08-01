@@ -33,3 +33,7 @@ policy:
     - X-Veriflow-User-Id
   set_request_headers:
     X-Test-Header: ThisIsATestHeader
+  token_auth_config_file: "token-auth.json"
+  token_auth_header: Authorization
+  token_auth_header_prefix: "Basic "
+  token_auth_is_base64_encoded: true

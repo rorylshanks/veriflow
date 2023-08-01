@@ -33,6 +33,7 @@
     "openid-client": "^5.4.3",
     "p-limit": "^4.0.0",
     "pem-jwk": "^2.0.0",
+    "picomatch": "^2.3.1",
     "pino": "^8.14.2",
     "pino-http": "^8.3.3",
     "pino-pretty": "^10.2.0",

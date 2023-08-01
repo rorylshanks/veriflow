@@ -135,3 +135,5 @@ config.yaml.*
 Caddyfile
 caddy.json
 output.json
+
+token-auth.json

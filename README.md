@@ -83,7 +83,40 @@ An example configuration file can be found in `example-config.yaml`. A breakdown
     - `cors_allow_preflight`: Whether to allow preflight CORS requests (HTTP `OPTIONS` requests).
     - `remove_request_headers`: Headers to remove from the request.
     - `set_request_headers`: Headers to set for the request.
+    - `token_auth_config_file`: The location of the external JSON file containing the token definitions (e.g., `"token-auth.json"`).
+    - `token_auth_header`: The name of the HTTP header that should contain the token (e.g., `Authorization`).
+    - `token_auth_header_prefix`: The prefix that should be present before the token in the HTTP header (e.g., `"Basic "`).
+    - `token_auth_is_base64_encoded`: Boolean value indicating whether the token is Base64 encoded (`true` or `false`).
+## Token Authentication in Veriflow
 
+In Veriflow, the token authentication functionality provides an alternative to the typical Single Sign-On (SSO) flow. It uses externally defined tokens for authorizing users and facilitating programmatic access. The token auth is configured at two places.
+
+### Per-Policy Configuration
+
+Within the policy configuration, several parameters can be set. See above for the token_auth parameters
+
+### External JSON Token Configuration
+
+The JSON file specified in `token_auth_config_file` should contain an object for each token, structured as follows:
+
+```json
+{
+    "TOKEN": {
+        "userId": "userId",
+        "valid_domains": [
+            "**"
+        ]
+    }
+}
+```
+
+In this object:
+
+- `"TOKEN"` is the token used for authorization.
+- `"userId"` is the ID of the user to whom the token belongs.
+- `"valid_domains"` is an array of domain patterns where the token is valid. Patterns can be globbed using the [Picomatch](https://github.com/micromatch/picomatch) library. These patterns should match the `from:` section in the route configuration of the policy. The `"**"` pattern signifies that the token is valid on all domains.
+
+Please note, for security purposes, it is essential to keep the JSON file and the policy configuration secure and confidential, as they contain sensitive access information.
 ## Roadmap
 
 - [ ] Add device-aware context
