@@ -23,7 +23,7 @@ function saturateRoute(proxyFrom, proxyTo, route) {
   }
   var requestHeadersToSet = {
     "Host": [
-      "{http.reverse_proxy.upstream.host}"
+      route.preserve_host_header ? "{http.request.host}" : "{http.reverse_proxy.upstream.host}"
     ],
     "X-Veriflow-Request": [
       "true"
