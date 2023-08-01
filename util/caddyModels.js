@@ -223,7 +223,12 @@ async function generateCaddyConfig() {
                 "body": "<!DOCTYPE html><html><head><title>Bad Request | Veriflow</title></head><body><h1>400 Bad Request</h1><p>We detected a loop in the veriflow configuration. Please ask your administrator.</p></body></html>",
                 "close": true,
                 "handler": "static_response",
-                "status_code": 400
+                "status_code": 400,
+                "headers": {
+                  "Content-Type": [
+                    "text/html"
+                  ]
+                }
               }
             ]
           }
