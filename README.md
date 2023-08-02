@@ -39,13 +39,13 @@ Veriflow acts as a reverse proxy for all requests, and sits at the ingress point
 <!-- GETTING STARTED -->
 ## Getting Started
 
-A prebuilt Docker container is available from Dockerhub, containing the autoscaler. You can pull the image by simply running
+A prebuilt Docker container is available from Dockerhub, containing Veriflow. You can pull the image by simply running
 
 ```
 docker run -p 2080:2080 -v $(pwd)/config.yaml:/appdata/config.yaml megalan247/veriflow:latest
 ```
 
-You may speficy a different configuration file location using the `CONFIG_FILE` env var
+You may specify a different configuration file location using the `CONFIG_FILE` env var
 
 ```
 docker run -p 2080:2080 -e CONFIG_FILE=/etc/config.yaml -v config.yaml:/etc/config.yaml megalan247/veriflow:latest
@@ -120,7 +120,7 @@ In this object:
 
 Please note, for security purposes, it is essential to keep the JSON file and the policy configuration secure and confidential, as they contain sensitive access information.
 
-### Request Header Mapping
+## Request Header Mapping
 
 The Request Header Mapping is a powerful functionality in Veriflow that allows administrators to set specific request headers per user, per route. This feature enhances flexibility by providing a more granular approach to managing requests. For per-route options, please see the above route definition.
 
