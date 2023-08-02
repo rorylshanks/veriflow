@@ -5,7 +5,7 @@ RUN apt update && apt upgrade -y && apt install -y ca-certificates supervisor
 COPY --from=caddy /usr/bin/caddy /usr/bin/caddy
 COPY docker/supervisord.conf /etc/supervisord.conf
 WORKDIR /appdata
-COPY package.json .
+COPY package*.json .
 RUN npm i
 COPY lib lib
 COPY util util
