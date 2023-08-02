@@ -87,6 +87,8 @@ An example configuration file can be found in `example-config.yaml`. A breakdown
     - `token_auth_header`: The name of the HTTP header that should contain the token (e.g., `Authorization`).
     - `token_auth_header_prefix`: The prefix that should be present before the token in the HTTP header (e.g., `"Basic "`).
     - `token_auth_is_base64_encoded`: Boolean value indicating whether the token is Base64 encoded (`true` or `false`).
+    - `request_header_map_file`: This parameter specifies the location of the external JSON file containing the header definitions for per-user request header mapping (e.g., `request_header_map.json`).
+    - `request_header_map_headers`: This is a list of the names of the HTTP headers that should be set for the requests for per-user request header mapping
 ## Token Authentication in Veriflow
 
 In Veriflow, the token authentication functionality provides an alternative to the typical Single Sign-On (SSO) flow. It uses externally defined tokens for authorizing users and facilitating programmatic access. The token auth is configured at two places.
@@ -95,7 +97,7 @@ In Veriflow, the token authentication functionality provides an alternative to t
 
 Within the policy configuration, several parameters can be set. See above for the token_auth parameters
 
-### External JSON Token Configuration
+### External Token Authentication
 
 The JSON file specified in `token_auth_config_file` should contain an object for each token, structured as follows:
 
@@ -117,6 +119,29 @@ In this object:
 - `"valid_domains"` is an array of domain patterns where the token is valid. Patterns can be globbed using the [Picomatch](https://github.com/micromatch/picomatch) library. These patterns should match the `from:` section in the route configuration of the policy. The `"**"` pattern signifies that the token is valid on all domains.
 
 Please note, for security purposes, it is essential to keep the JSON file and the policy configuration secure and confidential, as they contain sensitive access information.
+
+### Request Header Mapping
+
+The Request Header Mapping is a powerful functionality in Veriflow that allows administrators to set specific request headers per user, per route. This feature enhances flexibility by providing a more granular approach to managing requests. For per-route options, please see the above route definition.
+
+The JSON file specified in `request_header_map_file` should contain an object for each user, structured as follows:
+
+```json
+{
+    "ENTER_USER_ID_HERE": {
+        "Authorization": "test",
+        "X-test-Header": "another test"
+    }
+}
+```
+
+In this object:
+
+- `"ENTER_USER_ID_HERE"` should be replaced with the ID of the user for whom you're setting the headers.
+- The key-value pairs inside the user's object correspond to the headers you wish to set, with the header name as the key and the header value as the value.
+
+Upon configuration, Veriflow will automatically add the requested headers to each upstream request based on the user that accesses the service. This allows for personalized and context-specific request handling. Please remember to keep your JSON file and the policy configuration secure due to the sensitive nature of header information.
+
 ## Roadmap
 
 - [ ] Add device-aware context

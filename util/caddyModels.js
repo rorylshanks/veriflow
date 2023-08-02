@@ -18,6 +18,13 @@ function saturateRoute(proxyFrom, proxyTo, route) {
       ]
     }
   }
+  if (route.request_header_map_headers) {
+    for (var header of route.request_header_map_headers) {
+      copyHeaders[header] = [
+        `{http.reverse_proxy.header.${header}}`
+      ]
+    }
+  }
   if (route.remove_request_headers) {
     var requestHeadersToDelete = route.remove_request_headers
   }
