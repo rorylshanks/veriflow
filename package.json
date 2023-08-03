@@ -23,7 +23,6 @@
     "bossbat": "^1.2.0",
     "cache": "^3.0.0",
     "connect-redis": "^7.1.0",
-    "cookie-parser": "^1.4.6",
     "express": "^4.18.2",
     "express-session": "^1.17.3",
     "form-data": "^4.0.0",
@@ -35,8 +34,6 @@
     "pem-jwk": "^2.0.0",
     "picomatch": "^2.3.1",
     "pino": "^8.14.2",
-    "pino-http": "^8.3.3",
-    "pino-pretty": "^10.2.0",
     "redis": "^4.6.7",
     "timestring": "^7.0.0"
   },
