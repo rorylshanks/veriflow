@@ -39,7 +39,14 @@ function getConfig() {
 }
 
 function getRouteForHostname(hostname) {
-    return currentConfig.policy.find(element => element.from.includes(hostname))
+    var config = getConfig()
+    var route = config.policy.find(element => element.from.includes(hostname))
+    if (route) {
+        return route
+    } else {
+        log.error({ message: "Failed to find route for hostname", context: {route, hostname: hostname, numRoutes: config.policy.length}})
+        return null
+    }
 }
 
 async function getIdpConfig() {
