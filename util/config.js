@@ -70,6 +70,9 @@ async function getIdpConfig() {
 
 async function getUserById(id) {
     var config = await getIdpConfig()
+    if (!config) {
+        return null
+    }
     return config[id]
 }
 
