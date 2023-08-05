@@ -85,7 +85,7 @@ function saturateRoute(proxyFrom, proxyTo, route) {
             match: [
               {
                 path: [
-                  redirectBasePath + "/verify"
+                  redirectBasePath + "/set"
                 ]
               }
             ],
