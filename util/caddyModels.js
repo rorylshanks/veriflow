@@ -125,9 +125,6 @@ function saturateRoute(proxyFrom, proxyTo, route) {
                       "X-Forwarded-Path": [
                         "{http.request.orig_uri.path}"
                       ],
-                      "X-Forwarded-Protocol": [
-                        "{http.request.scheme}"
-                      ],
                       "X-Forwarded-Query": [
                         "{http.request.orig_uri.query}"
                       ],
