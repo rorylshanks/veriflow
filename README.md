@@ -79,6 +79,7 @@ An example configuration file can be found in `example-config.yaml`. A breakdown
     - `from`: Source URL.
     - `to`: Destination URL.
     - `claims_headers`: Headers to include in the JWT claims.
+    - `jwt_override_audience`: Sets the `aud` key of the JWT added to the header specified in claims_headers. By default it is the hostname of the upstream
     - `allowed_groups`: Groups allowed access.
     - `cors_allow_preflight`: Whether to allow preflight CORS requests (HTTP `OPTIONS` requests).
     - `remove_request_headers`: Headers to remove from the request.
