@@ -112,6 +112,7 @@ The JSON file specified in `token_auth_config_file` should contain an object for
 {
     "TOKEN": {
         "userId": "userId",
+        "bypass_authz_check": false,
         "valid_domains": [
             "**"
         ]
@@ -123,6 +124,7 @@ In this object:
 
 - `"TOKEN"` is the token used for authorization.
 - `"userId"` is the ID of the user to whom the token belongs.
+- `"bypass_authz_check"` is used to bypass additional authz checks, by validating the user against the IdP. This is useful for machine accounts, however must be used with care.
 - `"valid_domains"` is an array of domain patterns where the token is valid. Patterns can be globbed using the [Picomatch](https://github.com/micromatch/picomatch) library. These patterns should match the `from:` section in the route configuration of the policy. The `"**"` pattern signifies that the token is valid on all domains.
 
 Please note, for security purposes, it is essential to keep the JSON file and the policy configuration secure and confidential, as they contain sensitive access information.
