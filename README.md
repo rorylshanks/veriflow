@@ -3,7 +3,7 @@
 
 <div align="center">
 <a href="https://github.com/rorylshanks/veriflow">
-    <img src="docs/img/logo.png" alt="Logo" width="475" height="103">
+    <img src="https://codemo.re/images/veriflow.png" alt="Logo" width="475" height="103">
 </a>
 
 <h3 align="center">Veriflow Access Proxy</h3>
