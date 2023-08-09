@@ -59,6 +59,9 @@ An example configuration file can be found in `example-config.yaml`. A breakdown
 - `data_listen_port`: Port on which the data server listens.
 - `service_url`: URL of the Veriflow service.
 - `cookie_secret`: Secret key used for cookie encryption and verification.
+- `cookie_settings`:
+    - `sameSite`: Sets the sameSite attribute of the cookie.
+    - `secure`: Sets whether the cookie should be secure
 - `redis_host`: Hostname of the Redis database server.
 - `redis_port`: Port of the Redis database server.
 - `idp_client_id`: Client ID for communication with the Identity Provider (IdP).
