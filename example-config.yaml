@@ -18,6 +18,9 @@ metrics_address: 0.0.0.0:9090
 signing_key: "BASE64_ENCODED_RSA_PRIVATE_KEY"
 redirect_base_path: /.veriflow
 jwks_path: /.well-known/veriflow/jwks.json
+trusted_ranges: 
+  - 192.168.60.0/24
+  - 192.168.61.0/24
 policy:
 - title: test
   from: http://httpbin-test.localhost

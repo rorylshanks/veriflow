@@ -74,6 +74,7 @@ An example configuration file can be found in `example-config.yaml`. A breakdown
 - `signing_key`: RSA private key for signing JWT tokens, encoded in base64.
 - `redirect_base_path`: Base path for redirection URLs. By default `/.veriflow`
 - `jwks_path`: Location of the JSON Web Key Set (JWKS) that can be called to get the public keys of the signing key.
+- `trusted_ranges`: IP ranges that are trusted as being reverse proxies. Useful for running Veriflow behind proxies. 
 - `policy`: Policy for access control. This includes:
     - `title`: Title of the policy.
     - `from`: Source URL.
