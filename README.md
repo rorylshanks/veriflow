@@ -94,6 +94,8 @@ An example configuration file can be found in `example-config.yaml`. A breakdown
     - `token_auth_is_base64_encoded`: Boolean value indicating whether the token is Base64 encoded (`true` or `false`).
     - `request_header_map_file`: This parameter specifies the location of the external JSON file containing the header definitions for per-user request header mapping (e.g., `request_header_map.json`).
     - `request_header_map_headers`: This is a list of the names of the HTTP headers that should be set for the requests for per-user request header mapping
+    - `tls_client_cert_file`: Path to the client certificate file that should be used for upstream authentication (mTLS)
+    - `tls_client_key_file`: Path to the client certificate key that should be used for upstream authentication (mTLS)
 ## Token Authentication in Veriflow
 
 In Veriflow, the token authentication functionality provides an alternative to the typical Single Sign-On (SSO) flow. It uses externally defined tokens for authorizing users and facilitating programmatic access. The token auth is configured at two places.
