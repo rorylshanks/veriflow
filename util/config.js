@@ -10,6 +10,8 @@ let configFileLocation = process.env.CONFIG_FILE || "config.yaml"
 
 let currentConfig = yaml.load(fsSync.readFileSync(configFileLocation, 'utf8'))
 
+const watcher = fsSync.watch(configFileLocation, reloadConfig);
+
 const redisClient = redis.createClient({
     url: 'redis://' + getConfig().redis_host + ":" + getConfig().redis_port
 });
