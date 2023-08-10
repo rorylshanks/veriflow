@@ -13,7 +13,7 @@ let currentConfig = yaml.load(fsSync.readFileSync(configFileLocation, 'utf8'))
 
 const watcher = chokidar.watch(configFileLocation);
 
-watcher.on('change', reloadConfig);
+watcher.on('all', reloadConfig);
 
 const redisClient = redis.createClient({
     url: 'redis://' + getConfig().redis_host + ":" + getConfig().redis_port
