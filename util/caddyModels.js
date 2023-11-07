@@ -2,6 +2,7 @@ import { getConfig } from "./config.js"
 import log from './logging.js';
 import { writeFile } from "fs/promises";
 import axios from 'axios';
+import utils from './utils.js';
 
 function saturateRoute(proxyFrom, proxyTo, route) {
   var config = getConfig()
@@ -23,6 +24,19 @@ function saturateRoute(proxyFrom, proxyTo, route) {
       copyHeaders[header] = [
         `{http.reverse_proxy.header.${header}}`
       ]
+    }
+  }
+  // If dynamic backends are enabled, proxy to whatever veriflow tells caddy to proxy to for that request
+  if (route.dynamic_backend_config) {
+    var dynamic_backend_url_header_name = "X-Veriflow-Dynamic-Backend-Url"
+    copyHeaders[dynamic_backend_url_header_name]
+    proxyTo = `{http.reverse_proxy.header.${dynamic_backend_url_header_name}}`
+    if (route.dynamic_backend_config.copy_headers) {
+      for (var header of route.dynamic_backend_config.copy_headers) {
+        copyHeaders[header] = [
+          `{http.reverse_proxy.header.${header}}`
+        ]
+      }
     }
   }
   if (route.remove_request_headers) {
@@ -136,7 +150,7 @@ function saturateRoute(proxyFrom, proxyTo, route) {
                 },
                 rewrite: {
                   method: "GET",
-                  uri: redirectBasePath + "/verify?"
+                  uri: redirectBasePath + "/verify?" // The question mark is important as otherwise caddy will retain the query string when forwarding to veriflow
                 },
                 upstreams: [
                   {
@@ -183,16 +197,7 @@ function saturateAllRoutesFromConfig(config) {
     try {
 
       var fromURL = new URL(route.from)
-      var toURL = new URL(route.to)
-      if (toURL.protocol.includes("https")) {
-        var toPort = 443
-      } else {
-        var toPort = 80
-      }
-      if (toURL.port) {
-        var toPort = toURL.port
-      }
-      var toHostname = `${toURL.hostname}:${toPort}`
+      var toHostname = utils.urlToCaddyUpstream(route.to)
       var fromHostname = fromURL.hostname
 
       var saturatedRoute = saturateRoute(fromHostname, toHostname, route)
