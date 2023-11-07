@@ -126,6 +126,7 @@ The JSON file specified in `token_auth_config_file` should contain an object for
     "TOKEN": {
         "userId": "userId",
         "bypass_authz_check": false,
+        "bypass_dynamic_backend": false,
         "valid_domains": [
             "**"
         ]
@@ -138,6 +139,7 @@ In this object:
 - `"TOKEN"` is the token used for authorization.
 - `"userId"` is the ID of the user to whom the token belongs.
 - `"bypass_authz_check"` is used to bypass additional authz checks, by validating the user against the IdP. This is useful for machine accounts, however must be used with care.
+- `"bypass_dynamic_backend"` is used to bypass the dynamic backend function and route the user diretly to the default backend.
 - `"valid_domains"` is an array of domain patterns where the token is valid. Patterns can be globbed using the [Picomatch](https://github.com/micromatch/picomatch) library. These patterns should match the `from:` section in the route configuration of the policy. The `"**"` pattern signifies that the token is valid on all domains.
 
 Please note, for security purposes, it is essential to keep the JSON file and the policy configuration secure and confidential, as they contain sensitive access information.
@@ -194,21 +196,7 @@ When a token needs validation, Veriflow will send a POST request to the configur
 }
 ```
 
-The external service must respond with a JSON object containing the token configuration. For instance:
-
-```json
-{
-    "userId": "userId",
-    "bypass_authz_check": false,
-    "valid_domains": [
-        "**"
-    ]
-}
-```
-
-- `"userId"`: specifies the ID of the user to whom the token belongs.
-- `"bypass_authz_check"`: indicates whether to bypass additional authorization checks.
-- `"valid_domains"`: defines an array of domain patterns where the token is valid, allowing wildcard patterns.
+The external service must respond with a JSON object containing the token configuration. For an example token configuration please see the above documentation for the token file.
 
 It's essential to implement appropriate security measures when dealing with dynamic token authentication to prevent unauthorized access.
 
