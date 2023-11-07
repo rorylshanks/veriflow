@@ -1,0 +1,29 @@
+version: '3'
+services:
+  idp:
+    image: ghcr.io/dexidp/dex:latest
+    network_mode: host
+    ports:
+      - "5556:5556" # Public port
+      - "5557:5557" # Admin port
+    volumes:
+      - ./test/e2e/dex.yaml:/etc/dex/config.yaml
+    command: ["dex", "serve", "/etc/dex/config.yaml"]
+  redistest:
+    image: redis
+    network_mode: host
+    restart: always
+    ports:
+      - '6379:6379'
+  vftest:
+    build:
+      context: "."
+      dockerfile: Dockerfile
+    restart: always
+    network_mode: host
+    ports:
+      - '3000:3000'
+      - '2080:2080'
+    volumes:
+      - ./test/e2e/idp_output.json:/appdata/output.json
+      - ./test/e2e/veriflow.yaml:/appdata/config.yaml

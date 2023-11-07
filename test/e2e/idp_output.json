@@ -1,0 +1,13 @@
+{
+    "test@veriflow.dev": {
+        "displayName": "Veriflow Test User",
+        "givenName": "Test",
+        "preferredLanguage": "en",
+        "surname": "User",
+        "userPrincipalName": "test@veriflow.dev",
+        "id": "test@veriflow.dev",
+        "groups": [
+            "All Users"
+        ]
+    }
+}
