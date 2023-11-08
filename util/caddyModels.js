@@ -4,7 +4,7 @@ import { writeFile } from "fs/promises";
 import axios from 'axios';
 import utils from './utils.js';
 
-function saturateRoute(proxyFrom, proxyTo, route) {
+function saturateRoute(proxyFrom, proxyTo, route, isSecure) {
   var config = getConfig()
   var copyHeaders = {
     "X-Veriflow-User-Id": [
@@ -61,7 +61,10 @@ function saturateRoute(proxyFrom, proxyTo, route) {
     tlsOptions["client_certificate_key_file"] = route.tls_client_key_file
   }
   if (route.tls_skip_verify) {
-    tlsOptions[insecure_skip_verify] = true
+    tlsOptions["insecure_skip_verify"] = true
+  }
+  if ((Object.keys(tlsOptions).length == 0) && !isSecure) {
+    tlsOptions = null
   }
   var redirectBasePath = config.redirect_base_path || "/.veriflow"
   var routeModel = {
@@ -198,9 +201,16 @@ function saturateAllRoutesFromConfig(config) {
 
       var fromURL = new URL(route.from)
       var toHostname = utils.urlToCaddyUpstream(route.to)
+      var toURL = new URL(route.to)
+      var isSecure = false
+      if (toURL.protocol.includes("https")) {
+        isSecure = true
+      }
+      if (route.https_upstream) {
+        isSecure = true
+      }
       var fromHostname = fromURL.hostname
-
-      var saturatedRoute = saturateRoute(fromHostname, toHostname, route)
+      var saturatedRoute = saturateRoute(fromHostname, toHostname, route, isSecure)
       renderedRoutes.push(saturatedRoute)
       // log.debug({ "message": "Added route", route })
     } catch (error) {

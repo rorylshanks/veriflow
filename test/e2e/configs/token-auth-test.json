@@ -1,0 +1,8 @@
+{
+    "ThisIsATestToken": {
+        "userId": "test@veriflow.dev",
+        "valid_domains": [
+            "**"
+        ]
+    }
+}

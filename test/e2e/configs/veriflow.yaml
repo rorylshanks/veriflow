@@ -1,0 +1,80 @@
+---
+auth_listen_port: 3000
+data_listen_port: 2080
+service_url: http://localhost:2080
+cookie_secret: "fakeCookieSecret"
+redis_host: localhost
+redis_port: 6379
+idp_client_id: 0c4860a4-ae2b-4f49-97d7-b581252a7166
+idp_client_secret: supersecret
+idp_provider: localtest
+idp_provider_scope: openid email profile
+idp_provider_user_id_claim: email
+idp_provider_url: http://localhost:5556/dex
+idp_refresh_directory_interval: 10m
+idp_refresh_directory_timeout: 5m
+refresh_idp_at_start: true
+metrics_address: 0.0.0.0:9090
+# BELOW KEY IS ONLY FOR TESTING AND NOT A REAL KEY
+signing_key: "LS0tLS1CRUdJTiBSU0EgUFJJVkFURSBLRVktLS0tLQpNSUlFcFFJQkFBS0NBUUVBazdPT1kyZzk4QnVRWFFGN0d6VXQ3V3pQc1hsQXBXYWg5blozMDZwZzJUV0NXYm95CmIwekJEVWpmeWZHWDNEUnl1NTdZSFgwL2pwWUdhcGt6YW41SkxWSkl2MmpsQnZkWGZOREFvRkFWVURnTFJYa3QKN3FlMnRNazFGMEFoQnBpbWdQSUlMbU9HRVJrSzZ4cmFmRHorTXRyV2NOVnNqdmJUZ1ZuSC85K2lBSGZXSTQ3Zwp4NWd1MmJuR1U2N3cyN3BvZGo1ZWsyUGdBR0cwb2M0dUJiY3V4cGFOSy9xdERnZU1samtyRWc0S0NpYmlFMUFuCm5aUUc2aGkrNkJuQnNWQkRWTDV5L0xkOUhrS0FxNDB2MHQ4VThKZ0xqNElmcUJ4c2Z0WllyL2Y4UDhoR2Z1N0UKek13ZS91MnU2NXZCRVBlRnNYQk14UmZqQ041enVlVWI2L1RRaXdJREFRQUJBb0lCQVFDUlZ1bXhKZjEwelJyVQpla1dTYzFUN1FjeHFQZitBQXFzelpFWHJVY2UxVlhNc0tnM0ErYzBwN21EUVRkeDZRbDM0QTRsMEV6QThkYUpnCnVOb2dXNTVVYTVqTVNVSzlCUnpnNUdYNEduV3VsMGQ0R0pNN09XdVBJRU1PMnZya2k4ZWtNUVlkNTY4Z0dmMWwKZGVveXdLMytpdHJpOHhDODZXTWM4S1RlUTBnZG5rKzBOM0h0cWx5N005TG9laElpVHMyMGRBSGcwT1NGaXdyYwpiL2Y1T0MybFRhbmdJb1FpbzFvTEwwRUM2dk4wdnpUUkxnNW9hMXhUMTlDN21FcFprL1ZnUjBuQlpRcU4vNDlICklvTGpIWWNFbXVsZDh1UU14dUZ1RzVLN0lpQlBVKys1QWhvbmUwTDlvQnB2NFlYeVM2OXE0amU0ZjNFSllPa2QKS2VndmVJa3BBb0dCQU1RVUhheDBhOHVaTWNaZnhvaG9CMjVuaE53Nng1VEZtVGRQeC9DamxYWllBYWcrbUFGYwpTWnF4SEJHcVJTTFRQMVkreFp6VExlS0VJNnlLSXJwbHozMXZPMEdsU05Xb3UybGkvUFRBQlBUVnl3eEcvWVpHCmZUL3BhZXJXYzJuYkxnUngxMkl5TzhsQXIwUVFJU3ZHdlF0cUdHUlpQY2YxSHJMQU81dkgzK2U5QW9HQkFNRFcKdXgxMmo5U1BZT3NBN2E1b2JmSzZmazNnTVFjeEZVRGVUaU1GSHl3bFdoWThQOUhqelRHVUNEQ3gzT2lwSHdNZApBUWZOTXRMRDR4WThZS05Ha2t1YklFemFRL0hWckRIQklZdGNsMHFobUZzRDAyYXJqWnlNV2xQN0FySEZlenNhCnZGMHR5eEIzQlFjVWE0REpqcG1jN1V2S2l6Zm4xVEl0a2NXL1lsbm5Bb0dCQUpndEFJYXFhRXJBWDNnVk52RUEKdzl1MHJkRjZNUkZPZGtZT1BoK041ZDdPR0tNcHlURXRIZGJYNCsvMTFPaGRTUWUzZWdqbmdQSVBHZHk3N0kzNwpuQmcrcnArWkZyanoxbGZKUW9iMVRDTjBsYnkyaithWmFIV2t3dFpHajVZMVREYVkzODlQSzBWYlZXc2VsWS96CkV4Nzd2V2lNTmoydENLRTBQazc5eGRHRkFvR0JBSUVNc3JmcTZpSWp1WVpMWHNSQzJxRi9zSnJKRjhacVVJRFMKeEpPbkQ4OXBSN3B0bzRBQTVRYnl1L0JxZHgyMFlDNmpNRmRhT1ZMWENKZU8zRlVvR3l0QnF3SURaMGpsNTVCOApZTWgwdEVLYmxld0N5V3lDRGdqZjNHc3JKZ2gxMGh3aHJrRGxMbW5jWEo3NlNWOHNnNlBGWXdBL2taOWVKRXlxCk5rMlI0RzJ0QW9HQWZVL092bHdCSWlBN0p3Wjc4c2x5MVFPMkkrbWdybHo5OWRERlNRcTAwQTVUZjd2dGFEYncKNzQwRXBGc0lNRm5BNlZRQUg5YVV1RnVxSVV4K1RQazMyQXdJTy9SNVpLR2dNelNqcndDRVNBeXMyR0JJdWx1TwpFcktHNUp1NmFteWUyWk90eEl5emdWV3Zmc0hERG5MNDRuTmNhYkNDbnRQR1dJb3QyeXhnZllvPQotLS0tLUVORCBSU0EgUFJJVkFURSBLRVktLS0tLQo=" # ONLY FOR TESTING
+xff_num_trusted_hops: 2
+redirect_base_path: /.pomerium
+jwks_path: /.well-known/pomerium/jwks.json
+kid_override: "0"
+policy:
+- from: http://test-basic-login.localtest.me
+  to: http://localhost:8080
+  allowed_groups:
+  - All Users
+
+- from: http://test-unauthorized-login.localtest.me
+  to: http://localhost:8080
+  allowed_groups:
+  - No Users
+
+- from: http://test-https-upstream.localtest.me
+  to: https://postman-echo.com
+  allowed_groups:
+  - All Users
+
+- from: http://test-removing-headers.localtest.me
+  to: http://localhost:8080
+  allowed_groups:
+  - All Users
+  remove_request_headers:
+    - X-Forwarded-For
+    - X-Veriflow-User-Id
+
+- from: http://test-adding-headers.localtest.me
+  to: http://localhost:8080
+  allowed_groups:
+  - All Users
+  claims_headers:
+    X-Pomerium-Claim-Email: mail
+  set_request_headers:
+    x-test-header: Thisisatest
+
+- from: http://test-mtls-auth.localtest.me
+  to: https://localhost:8443
+  tls_skip_verify: true
+  tls_client_cert_file: "/configs/mtls/client-cert.crt"
+  tls_client_key_file: "/configs/mtls/client-cert.pem"
+  allowed_groups:
+  - All Users
+
+- from: http://test-header-mapping.localtest.me
+  to: http://localhost:8080
+  request_header_map_file: "/configs/header-mapping-test.json"
+  request_header_map_headers:
+    - Authorization
+  allowed_groups:
+  - All Users
+
+- from: http://test-token-auth.localtest.me
+  to: http://localhost:8080
+  token_auth_config_file: "/configs/token-auth-test.json"
+  token_auth_header: Authorization
+  token_auth_header_prefix: "Bearer "
+  token_auth_is_base64_encoded: false
+  allowed_groups:
+  - All Users

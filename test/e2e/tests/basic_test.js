@@ -1,0 +1,53 @@
+Feature('Login');
+
+Scenario('Basic login test', async ({ I }) => {
+    I.amOnPage('http://test-basic-login.localtest.me:2080/get');
+    I.login();
+    I.see("x-veriflow-user-id")
+});
+
+Scenario('HTTPS Upstream Test', async ({ I }) => {
+    I.amOnPage('http://test-https-upstream.localtest.me:2080/get');
+    I.login();
+    I.see("x-veriflow-user-id")
+});
+
+Scenario('Removing headers', async ({ I }) => {
+    I.amOnPage('http://test-removing-headers.localtest.me:2080/get');
+    I.login();
+    I.dontSee("x-veriflow-user-id")
+});
+
+Scenario('Adding headers', async ({ I }) => {
+    I.amOnPage('http://test-adding-headers.localtest.me:2080/get');
+    I.login();
+    I.see("x-pomerium-claim-email")
+    I.see("x-test-header")
+});
+
+Scenario('Testing mTLS', async ({ I }) => {
+    I.amOnPage('http://test-mtls-auth.localtest.me:2080/');
+    I.login();
+    I.see("Veriflow-Test-Cert")
+    I.see("Veriflow-Test-CA")
+});
+
+Scenario('Testing Header Mapping', async ({ I }) => {
+    I.amOnPage('http://test-header-mapping.localtest.me:2080/');
+    I.login();
+    I.see("ThisIsATestHeaderFromTheHeaderMapping")
+});
+
+Scenario('Testing Token Auth', async ({ I }) => {
+    I.setPuppeteerRequestHeaders({
+        'Authorization': 'Bearer ThisIsATestToken',
+    });
+    I.amOnPage('http://test-token-auth.localtest.me:2080/');
+    I.see("x-veriflow-user-id")
+});
+
+Scenario('Testing Unauthorized Flow', async ({ I }) => {
+    I.amOnPage('http://test-unauthorized-login.localtest.me:2080/');
+    I.login()
+    I.see("Unauthorized")
+});

@@ -1,0 +1,19 @@
+{
+  "name": "e2e",
+  "version": "1.0.0",
+  "description": "",
+  "main": "codecept.conf.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "codeceptjs run-workers 3"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "codeceptjs": "^3.5.7",
+    "puppeteer": "^21.5.0"
+  }
+}

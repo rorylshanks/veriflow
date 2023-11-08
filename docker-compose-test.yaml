@@ -1,0 +1,25 @@
+version: '3'
+services:
+  idp:
+    image: ghcr.io/dexidp/dex:latest
+    network_mode: host
+    volumes:
+      - ./test/e2e/configs/dex.yaml:/etc/dex/config.yaml
+    command: ["dex", "serve", "/etc/dex/config.yaml"]
+  redistest:
+    image: redis
+    network_mode: host
+  vftest:
+    build:
+      context: "."
+      dockerfile: Dockerfile
+    network_mode: host
+    volumes:
+      - ./test/e2e/configs/idp_output.json:/appdata/output.json
+      - ./test/e2e/configs/veriflow.yaml:/appdata/config.yaml
+      - ./test/e2e/configs:/configs
+  echo:
+    image: mendhak/http-https-echo:30
+    network_mode: host
+    environment:
+      MTLS_ENABLE: 1
