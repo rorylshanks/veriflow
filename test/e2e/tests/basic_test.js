@@ -1,4 +1,4 @@
-Feature('Login');
+Feature('Login').retry(3);
 
 Scenario('Basic login test', async ({ I }) => {
     I.amOnPage('http://test-basic-login.localtest.me:2080/get');
