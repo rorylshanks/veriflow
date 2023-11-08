@@ -3,7 +3,7 @@ import log from './logging.js';
 import { writeFile } from "fs/promises";
 import axios from 'axios';
 
-function saturateRoute(proxyFrom, proxyTo, route) {
+function saturateRoute(proxyFrom, proxyTo, route, isSecure) {
   var config = getConfig()
   var copyHeaders = {
     "X-Veriflow-User-Id": [
@@ -47,7 +47,10 @@ function saturateRoute(proxyFrom, proxyTo, route) {
     tlsOptions["client_certificate_key_file"] = route.tls_client_key_file
   }
   if (route.tls_skip_verify) {
-    tlsOptions[insecure_skip_verify] = true
+    tlsOptions["insecure_skip_verify"] = true
+  }
+  if ((Object.keys(tlsOptions).length == 0) && !isSecure) {
+    tlsOptions = null
   }
   var redirectBasePath = config.redirect_base_path || "/.veriflow"
   var routeModel = {
@@ -184,18 +187,23 @@ function saturateAllRoutesFromConfig(config) {
 
       var fromURL = new URL(route.from)
       var toURL = new URL(route.to)
+      var isSecure = false
       if (toURL.protocol.includes("https")) {
         var toPort = 443
+        isSecure = true
       } else {
         var toPort = 80
       }
       if (toURL.port) {
         var toPort = toURL.port
       }
+      if (route.https_upstream) {
+        isSecure = true
+      }
       var toHostname = `${toURL.hostname}:${toPort}`
       var fromHostname = fromURL.hostname
 
-      var saturatedRoute = saturateRoute(fromHostname, toHostname, route)
+      var saturatedRoute = saturateRoute(fromHostname, toHostname, route, isSecure)
       renderedRoutes.push(saturatedRoute)
       // log.debug({ "message": "Added route", route })
     } catch (error) {

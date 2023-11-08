@@ -1,0 +1,6 @@
+{
+    "test@veriflow.dev": {
+        "Authorization": "ThisIsATestHeaderFromTheHeaderMapping",
+        "X-test-Header": "another test"
+    }
+}

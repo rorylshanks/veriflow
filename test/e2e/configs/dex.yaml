@@ -1,0 +1,31 @@
+issuer: http://127.0.0.1:5556/dex
+storage:
+  type: sqlite3
+  config:
+    file: /tmp/dex.db
+
+web:
+  http: 0.0.0.0:5556
+
+logger:
+  level: "debug"
+  format: "text"
+
+oauth2:
+  skipApprovalScreen: true
+
+staticClients:
+- id: 0c4860a4-ae2b-4f49-97d7-b581252a7166
+  redirectURIs:
+  - 'http://localhost:2080/.pomerium/callback'
+  name: 'Veriflow'
+  secret: supersecret
+
+enablePasswordDB: true
+
+staticPasswords:
+- email: "test@veriflow.dev"
+  # bcrypt hash of the string "password": $(echo password | htpasswd -BinC 10 admin | cut -d: -f2)
+  hash: "$2a$10$2b2cU8CPhOTaGrs1HRQuAueS7JTT5ZHsHSzYiFPm1leZck7Mc8T4W"
+  username: "test"
+  userID: "test@veriflow.dev"

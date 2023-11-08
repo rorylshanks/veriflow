@@ -6,7 +6,7 @@ services:
     restart: always
     ports:
       - '6379:6379'
-  frontend:
+  vf:
     build:
       context: "."
       dockerfile: Dockerfile.dev
@@ -17,5 +17,3 @@ services:
     volumes:
       - $PWD:/appdata
       - /secrets:/secrets
-    environment:
-      REDIS_HOST: redis
