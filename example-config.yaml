@@ -29,6 +29,7 @@ policy:
 - title: test
   from: http://httpbin-test.localhost
   to: https://postman-echo.com
+  https_upstream: true
   claims_headers:
     X-Pomerium-Claim-Email: mail
     X-Pomerium-Jwt-Assertion: jwt

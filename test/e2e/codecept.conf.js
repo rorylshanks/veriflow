@@ -17,5 +17,8 @@ exports.config = {
       windowSize: '1200x900'
     }
   },
-  name: 'e2e'
+  name: 'e2e',
+  include: {
+    I: './steps_file.js' // Path to your steps file
+  }
 }
