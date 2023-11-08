@@ -13,9 +13,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "codeceptjs": "^3.5.7"
-  },
-  "devDependencies": {
+    "codeceptjs": "^3.5.7",
     "puppeteer": "^21.5.0"
   }
 }
