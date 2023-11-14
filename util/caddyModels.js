@@ -3,6 +3,7 @@ import log from './logging.js';
 import { writeFile } from "fs/promises";
 import axios from 'axios';
 import utils from './utils.js';
+import errorpage from './errorpage.js'
 
 function saturateRoute(proxyFrom, proxyTo, route, isSecure) {
   var config = getConfig()
@@ -229,6 +230,10 @@ async function generateCaddyConfig() {
   log.debug("Generating new caddy config")
   var config = getConfig()
   var routes = saturateAllRoutesFromConfig(config)
+
+  const E_LOOP_DETECTED_HTML = await errorpage.renderErrorPage(502, "ERR_LOOP_DETECTED")
+  const E_NOT_FOUND_HTML = await errorpage.renderErrorPage(404, "ERR_ROUTE_NOT_FOUND")
+
   var circuitBreakerRoute = {
     "handle": [
       {
@@ -237,7 +242,7 @@ async function generateCaddyConfig() {
           {
             "handle": [
               {
-                "body": "<!DOCTYPE html><html><head><title>Bad Request | Veriflow</title></head><body><h1>400 Bad Request</h1><p>We detected a loop in the veriflow configuration. Please ask your administrator.</p></body></html>",
+                "body": E_LOOP_DETECTED_HTML,
                 "close": true,
                 "handler": "static_response",
                 "status_code": 400,
@@ -302,7 +307,7 @@ async function generateCaddyConfig() {
           {
             "handle": [
               {
-                "body": "<!DOCTYPE html><html><head><title>404 Site Not Found | Veriflow</title></head><body><h1>404 Site Not Found</h1><p>The requested site cannot be found in the Veriflow configuration. Please ask your administrator.</p></body></html>",
+                "body": E_NOT_FOUND_HTML,
                 "close": true,
                 "handler": "static_response",
                 "status_code": 404,

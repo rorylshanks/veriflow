@@ -49,5 +49,5 @@ Scenario('Testing Token Auth', async ({ I }) => {
 Scenario('Testing Unauthorized Flow', async ({ I }) => {
     I.amOnPage('http://test-unauthorized-login.localtest.me:2080/');
     I.login()
-    I.see("User is not authorized to access this route.")
+    I.see("ERR_NOT_AUTHORIZED")
 });
