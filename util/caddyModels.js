@@ -231,7 +231,7 @@ async function generateCaddyConfig() {
   var config = getConfig()
   var routes = saturateAllRoutesFromConfig(config)
 
-  const E_LOOP_DETECTED_HTML = await errorpage.renderErrorPage(502, "ERR_LOOP_DETECTED")
+  const E_LOOP_DETECTED_HTML = await errorpage.renderErrorPage(503, "ERR_LOOP_DETECTED")
   const E_NOT_FOUND_HTML = await errorpage.renderErrorPage(404, "ERR_ROUTE_NOT_FOUND")
 
   var circuitBreakerRoute = {
@@ -245,7 +245,7 @@ async function generateCaddyConfig() {
                 "body": E_LOOP_DETECTED_HTML,
                 "close": true,
                 "handler": "static_response",
-                "status_code": 400,
+                "status_code": 503,
                 "headers": {
                   "Content-Type": [
                     "text/html"
