@@ -9,6 +9,7 @@ COPY package*.json .
 RUN npm i
 COPY lib lib
 COPY util util
+COPY views views
 COPY app.js app.js
 COPY caddyfile-blank.json caddy.json
 

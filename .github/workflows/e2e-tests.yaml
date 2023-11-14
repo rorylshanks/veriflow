@@ -17,6 +17,7 @@ jobs:
 
     - name: Archive E2E Test Output
       uses: actions/upload-artifact@v3
+      if: always()
       with:
         name: e2e-test-screenshots
         path: |
