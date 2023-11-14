@@ -2,6 +2,7 @@ import { getConfig } from "./config.js"
 import log from './logging.js';
 import { writeFile } from "fs/promises";
 import axios from 'axios';
+import utils from './utils.js';
 
 function saturateRoute(proxyFrom, proxyTo, route, isSecure) {
   var config = getConfig()
@@ -23,6 +24,19 @@ function saturateRoute(proxyFrom, proxyTo, route, isSecure) {
       copyHeaders[header] = [
         `{http.reverse_proxy.header.${header}}`
       ]
+    }
+  }
+  // If dynamic backends are enabled, proxy to whatever veriflow tells caddy to proxy to for that request
+  if (route.dynamic_backend_config) {
+    var dynamic_backend_url_header_name = "X-Veriflow-Dynamic-Backend-Url"
+    copyHeaders[dynamic_backend_url_header_name]
+    proxyTo = `{http.reverse_proxy.header.${dynamic_backend_url_header_name}}`
+    if (route.dynamic_backend_config.copy_headers) {
+      for (var header of route.dynamic_backend_config.copy_headers) {
+        copyHeaders[header] = [
+          `{http.reverse_proxy.header.${header}}`
+        ]
+      }
     }
   }
   if (route.remove_request_headers) {
@@ -139,7 +153,7 @@ function saturateRoute(proxyFrom, proxyTo, route, isSecure) {
                 },
                 rewrite: {
                   method: "GET",
-                  uri: redirectBasePath + "/verify?"
+                  uri: redirectBasePath + "/verify?" // The question mark is important as otherwise caddy will retain the query string when forwarding to veriflow
                 },
                 upstreams: [
                   {
@@ -186,23 +200,16 @@ function saturateAllRoutesFromConfig(config) {
     try {
 
       var fromURL = new URL(route.from)
+      var toHostname = utils.urlToCaddyUpstream(route.to)
       var toURL = new URL(route.to)
       var isSecure = false
       if (toURL.protocol.includes("https")) {
-        var toPort = 443
         isSecure = true
-      } else {
-        var toPort = 80
-      }
-      if (toURL.port) {
-        var toPort = toURL.port
       }
       if (route.https_upstream) {
         isSecure = true
       }
-      var toHostname = `${toURL.hostname}:${toPort}`
       var fromHostname = fromURL.hostname
-
       var saturatedRoute = saturateRoute(fromHostname, toHostname, route, isSecure)
       renderedRoutes.push(saturatedRoute)
       // log.debug({ "message": "Added route", route })

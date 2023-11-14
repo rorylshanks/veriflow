@@ -14,3 +14,10 @@ jobs:
 
     - name: Run end-to-end tests
       run: make test-e2e
+
+    - name: Archive E2E Test Output
+      uses: actions/upload-artifact@v3
+      with:
+        name: e2e-test-screenshots
+        path: |
+          test/e2e/output/*

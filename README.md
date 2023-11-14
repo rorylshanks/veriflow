@@ -85,6 +85,7 @@ An example configuration file can be found in `example-config.yaml`. A breakdown
     - `title`: Title of the policy.
     - `from`: Source URL.
     - `to`: Destination URL.
+    - `tls_skip_verify`: Whether to verify upstream TLS certificates. Default `true`
     - `claims_headers`: Headers to include in the JWT claims.
     - `jwt_override_audience`: Sets the `aud` key of the JWT added to the header specified in claims_headers. By default it is the hostname of the upstream
     - `allowed_groups`: Groups allowed access.
@@ -99,6 +100,15 @@ An example configuration file can be found in `example-config.yaml`. A breakdown
     - `request_header_map_headers`: This is a list of the names of the HTTP headers that should be set for the requests for per-user request header mapping
     - `tls_client_cert_file`: Path to the client certificate file that should be used for upstream authentication (mTLS)
     - `tls_client_key_file`: Path to the client certificate key that should be used for upstream authentication (mTLS)
+    - `token_auth_dynamic_config`: Configuration for dynamic token authentication services
+        - `url`: URL of the external token authentication service
+        - `headers`: A map of headers that will be sent downstream to the authentication service
+    - `dynamic_backend_config`: Configuration for dynamic backends (see below documentation)
+        - `url`: URL of the dynamic backend service
+        - `copy_headers`: Headers to copy from the dynamic backend service to the downstream service.
+        - `request_headers`: Headers to add to the request to the dynamic backend service
+        - `request_body`: Body to post to the dynamic backend service. The key `user` is always added with the user ID of the currently authenticated user
+
 ## Token Authentication in Veriflow
 
 In Veriflow, the token authentication functionality provides an alternative to the typical Single Sign-On (SSO) flow. It uses externally defined tokens for authorizing users and facilitating programmatic access. The token auth is configured at two places.
@@ -116,6 +126,7 @@ The JSON file specified in `token_auth_config_file` should contain an object for
     "TOKEN": {
         "userId": "userId",
         "bypass_authz_check": false,
+        "bypass_dynamic_backend": false,
         "valid_domains": [
             "**"
         ]
@@ -128,6 +139,7 @@ In this object:
 - `"TOKEN"` is the token used for authorization.
 - `"userId"` is the ID of the user to whom the token belongs.
 - `"bypass_authz_check"` is used to bypass additional authz checks, by validating the user against the IdP. This is useful for machine accounts, however must be used with care.
+- `"bypass_dynamic_backend"` is used to bypass the dynamic backend function and route the user diretly to the default backend.
 - `"valid_domains"` is an array of domain patterns where the token is valid. Patterns can be globbed using the [Picomatch](https://github.com/micromatch/picomatch) library. These patterns should match the `from:` section in the route configuration of the policy. The `"**"` pattern signifies that the token is valid on all domains.
 
 Please note, for security purposes, it is essential to keep the JSON file and the policy configuration secure and confidential, as they contain sensitive access information.
@@ -153,6 +165,89 @@ In this object:
 - The key-value pairs inside the user's object correspond to the headers you wish to set, with the header name as the key and the header value as the value.
 
 Upon configuration, Veriflow will automatically add the requested headers to each upstream request based on the user that accesses the service. This allows for personalized and context-specific request handling. Please remember to keep your JSON file and the policy configuration secure due to the sensitive nature of header information.
+
+## Dynamic Token Authentication
+
+Veriflow now supports Dynamic Token Authentication, which allows the system to validate tokens against an external API dynamically. This method is particularly useful when you need real-time token validation that adapts to evolving authorization needs without changing the service's static configuration.
+
+### Configuration of Dynamic Token Authentication
+
+To use Dynamic Token Authentication, you should configure the `token_auth_dynamic_config` parameter in your `config.yaml` file as follows:
+
+```yaml
+token_auth_dynamic_config:
+  url: https://token-service.veriflow.dev/check
+  headers:
+    Auth: fake
+```
+
+With this configuration:
+
+- `url`: specifies the external service endpoint for token validation.
+- `headers`: defines any headers that need to be sent with the validation request. In this case, an `Auth` header with a value of `fake` is included.
+
+### How it Works
+
+When a token needs validation, Veriflow will send a POST request to the configured URL with a JSON payload containing the token:
+
+```json
+{
+  "token": "TOKEN_HERE"
+}
+```
+
+The external service must respond with a JSON object containing the token configuration. For an example token configuration please see the above documentation for the token file.
+
+It's essential to implement appropriate security measures when dealing with dynamic token authentication to prevent unauthorized access.
+
+## Dynamic Backend Configuration
+
+Veriflow introduces the Dynamic Backend Configuration feature to enhance its reverse proxy capabilities. This feature delegates the decision of which backend to send a user request to an external service.
+
+### Configuration of Dynamic Backend Configuration
+
+You can set up Dynamic Backend Configuration by adding the following parameters to your `config.yaml` file:
+
+```yaml
+dynamic_backend_config:
+  url: https://rbi.veriflow.dev
+  copy_headers:
+    - Header1
+  request_headers:
+    Auth: test123
+  request_body:
+    USER: user
+    URL: url
+    S3_BUCKET: veriflow-rbi-test
+```
+
+Here's what each parameter does:
+
+- `url`: The endpoint to which Veriflow will send a POST request to determine the appropriate backend for a given request.
+- `copy_headers`: A list of headers from the original request that should be forwarded to the external service.
+- `request_headers`: Headers to include in the request to the external service.
+- `request_body`: A JSON object with information about the user and the request, used by the external service to make routing decisions.
+
+### Expected Response
+
+The external service should respond with a JSON object containing routing information. For example:
+
+```json
+{
+  "url": "url_to_forward_to",
+  "headers": [
+    {
+      "key": "Header1",
+      "value": "headerValue1"
+    }
+  ]
+}
+```
+
+- `url`: The backend URL to which the user request should be forwarded.
+- `headers`: A list of headers to be added to the proxied request.
+
+The Dynamic Backend Configuration feature is especially useful for scenarios that require complex routing logic that can't be encoded within static configurations, providing more flexibility and control over request handling.
 
 ## Roadmap
 

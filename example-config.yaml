@@ -29,6 +29,7 @@ policy:
 - title: test
   from: http://httpbin-test.localhost
   to: https://postman-echo.com
+  tls_skip_verify: false
   https_upstream: true
   claims_headers:
     X-Pomerium-Claim-Email: mail
@@ -41,6 +42,10 @@ policy:
     - X-Veriflow-User-Id
   set_request_headers:
     X-Test-Header: ThisIsATestHeader
+  token_auth_dynamic_config: 
+    url: https://token-service.veriflow.dev/check
+    headers:
+      Auth: fake
   token_auth_config_file: "token-auth.json"
   token_auth_header: Authorization
   token_auth_header_prefix: "Basic "
@@ -52,3 +57,13 @@ policy:
     - X-Test-Header
   tls_client_cert_file: path/to/cert.pem
   tls_client_key_file: path/to/key.pem
+  dynamic_backend_config:
+    url: https://dynback.veriflow.dev
+    copy_headers:
+      - Header1
+    request_headers:
+      Auth: test123
+    request_body:
+      USER: user
+      URL: url
+      S3_BUCKET: veriflow-dynback-test
