@@ -3,17 +3,18 @@ version: '3'
 services:
   redis:
     image: redis
-    restart: always
-    ports:
-      - '6379:6379'
+    network_mode: host
   vf:
     build:
       context: "."
       dockerfile: Dockerfile.dev
-    restart: always
-    ports:
-      - '3000:3000'
-      - '2080:2080'
+    network_mode: host
     volumes:
       - $PWD:/appdata
       - /secrets:/secrets
+  idptest:
+    image: ghcr.io/dexidp/dex:latest
+    network_mode: host
+    volumes:
+      - ./test/e2e/configs/dex.yaml:/etc/dex/config.yaml
+    command: ["dex", "serve", "/etc/dex/config.yaml"]
