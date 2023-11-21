@@ -45,13 +45,13 @@ Veriflow acts as a reverse proxy for all requests, and sits at the ingress point
 A prebuilt Docker container is available from Dockerhub, containing Veriflow. You can pull the image by simply running
 
 ```
-docker run -p 2080:2080 -v $(pwd)/config.yaml:/appdata/config.yaml megalan247/veriflow:latest
+docker run -p 2080:2080 -v $(pwd)/config.yaml:/appdata/config.yaml rorylshanks/veriflow:latest
 ```
 
 You may specify a different configuration file location using the `CONFIG_FILE` env var
 
 ```
-docker run -p 2080:2080 -e CONFIG_FILE=/etc/config.yaml -v config.yaml:/etc/config.yaml megalan247/veriflow:latest
+docker run -p 2080:2080 -e CONFIG_FILE=/etc/config.yaml -v config.yaml:/etc/config.yaml rorylshanks/veriflow:latest
 ```
 
 ## Veriflow Configuration Options
