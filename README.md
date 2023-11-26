@@ -83,7 +83,7 @@ An example configuration file can be found in `example-config.yaml`. A breakdown
 - `trusted_ranges`: IP ranges that are trusted as being reverse proxies. Useful for running Veriflow behind proxies. 
 - `policy`: Policy for access control. This includes:
     - `title`: Title of the policy.
-    - `from`: Source URL.
+    - `from`: Source URL or advanced matching policy (see below)
     - `to`: Destination URL.
     - `tls_skip_verify`: Whether to verify upstream TLS certificates. Default `true`
     - `claims_headers`: Headers to include in the JWT claims.
@@ -287,8 +287,6 @@ Veriflow's use of Caddy as its data layer means a variety of matchers are suppor
 ### Important Note for Path Matching
 
 When configuring Advanced Route Matching in Veriflow, especially when using path matching, it's crucial to include a match for the `/.veriflow/*` path. This step ensures that callback functions and other internal Veriflow mechanisms operate correctly.
-
-Here's how to modify the example configuration to incorporate this requirement:
 
 Advanced Route Matching in Veriflow significantly enhances routing capabilities, offering a sophisticated approach to managing access and directing traffic in complex network environments.
 
