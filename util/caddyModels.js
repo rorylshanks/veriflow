@@ -5,8 +5,33 @@ import axios from 'axios';
 import utils from './utils.js';
 import errorpage from './errorpage.js'
 
-function saturateRoute(proxyFrom, proxyTo, route, isSecure, routeId) {
+function saturateRoute(route, routeId) {
   var config = getConfig()
+
+  if (typeof route.from === 'object') {
+    var routeMatcher = [route.from]
+  } else {
+    var fromURL = new URL(route.from)
+    var proxyFrom = fromURL.hostname
+    var routeMatcher = [
+      {
+        host: [
+          proxyFrom
+        ]
+      }
+    ]
+  }
+
+  var proxyTo = utils.urlToCaddyUpstream(route.to)
+  var toURL = new URL(route.to)
+  var isSecure = false
+  if (toURL.protocol.includes("https")) {
+    isSecure = true
+  }
+  if (route.https_upstream) {
+    isSecure = true
+  }
+
   var copyHeaders = {
     "X-Veriflow-User-Id": [
       "{http.reverse_proxy.header.X-Veriflow-User-Id}"
@@ -69,13 +94,7 @@ function saturateRoute(proxyFrom, proxyTo, route, isSecure, routeId) {
   }
   var redirectBasePath = config.redirect_base_path || "/.veriflow"
   var routeModel = {
-    match: [
-      {
-        host: [
-          proxyFrom
-        ]
-      }
-    ],
+    match: routeMatcher,
     handle: [
       {
         handler: "subroute",
@@ -203,18 +222,7 @@ function saturateAllRoutesFromConfig(config) {
   for (var routeId in routes) {
     try {
       var route = routes[routeId]
-      var fromURL = new URL(route.from)
-      var toHostname = utils.urlToCaddyUpstream(route.to)
-      var toURL = new URL(route.to)
-      var isSecure = false
-      if (toURL.protocol.includes("https")) {
-        isSecure = true
-      }
-      if (route.https_upstream) {
-        isSecure = true
-      }
-      var fromHostname = fromURL.hostname
-      var saturatedRoute = saturateRoute(fromHostname, toHostname, route, isSecure, routeId)
+      var saturatedRoute = saturateRoute(route, routeId)
       renderedRoutes.push(saturatedRoute)
       // log.debug({ "message": "Added route", route })
     } catch (error) {
