@@ -56,4 +56,6 @@ Scenario('Advanced matchers test', async ({ I }) => {
     I.amOnPage('http://test-advanced-matchers.localtest.me:2080/get');
     I.login();
     I.see("x-veriflow-user-id")
+    I.amOnPage('http://test-advanced-matchers.localtest.me:2080/should404');
+    I.see("ERR_ROUTE_NOT_FOUND")
 });
