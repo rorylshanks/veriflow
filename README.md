@@ -253,7 +253,7 @@ The Dynamic Backend Configuration feature is especially useful for scenarios tha
 
 - [ ] Add device-aware context
 - [ ] Add UI for debugging users
-- [ ] Fix getRouteForHostname to also match based on path
+- [x] Fix getRouteFromRequest to also match based on path
 - [ ] Add metrics for monitoring
 - [ ] Better logging
 
