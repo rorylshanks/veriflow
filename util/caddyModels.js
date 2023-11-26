@@ -5,7 +5,7 @@ import axios from 'axios';
 import utils from './utils.js';
 import errorpage from './errorpage.js'
 
-function saturateRoute(proxyFrom, proxyTo, route, isSecure) {
+function saturateRoute(proxyFrom, proxyTo, route, isSecure, routeId) {
   var config = getConfig()
   var copyHeaders = {
     "X-Veriflow-User-Id": [
@@ -148,6 +148,9 @@ function saturateRoute(proxyFrom, proxyTo, route, isSecure) {
                       ],
                       "X-Forwarded-Uri": [
                         "{http.request.uri}"
+                      ],
+                      "X-Veriflow-Route-Id": [
+                        routeId
                       ]
                     }
                   }
@@ -197,9 +200,9 @@ function saturateRoute(proxyFrom, proxyTo, route, isSecure) {
 function saturateAllRoutesFromConfig(config) {
   var renderedRoutes = []
   var routes = config.policy
-  for (var route of routes) {
+  for (var routeId in routes) {
     try {
-
+      var route = routes[id]
       var fromURL = new URL(route.from)
       var toHostname = utils.urlToCaddyUpstream(route.to)
       var toURL = new URL(route.to)
@@ -211,7 +214,7 @@ function saturateAllRoutesFromConfig(config) {
         isSecure = true
       }
       var fromHostname = fromURL.hostname
-      var saturatedRoute = saturateRoute(fromHostname, toHostname, route, isSecure)
+      var saturatedRoute = saturateRoute(fromHostname, toHostname, route, isSecure, routeId)
       renderedRoutes.push(saturatedRoute)
       // log.debug({ "message": "Added route", route })
     } catch (error) {

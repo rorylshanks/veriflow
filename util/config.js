@@ -43,9 +43,14 @@ function getConfig() {
     return currentConfig
 }
 
-function getRouteForHostname(hostname) {
+function getRouteFromRequest(req) {
     var config = getConfig()
-    var route = config.policy.find(element => element.from.includes(hostname))
+    var routeId = req.get("X-Veriflow-Route-Id")
+    if (!routeId) {
+        log.error({ message: "No route ID included in request", context: {route, hostname: hostname, numRoutes: config.policy.length}})
+        return null
+    }
+    var route = config.policy[routeId]
     if (route) {
         return route
     } else {
@@ -85,6 +90,6 @@ export {
     reloadConfig,
     getConfig,
     getIdpConfig,
-    getRouteForHostname,
+    getRouteFromRequest,
     getUserById
 };
