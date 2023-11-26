@@ -202,7 +202,7 @@ function saturateAllRoutesFromConfig(config) {
   var routes = config.policy
   for (var routeId in routes) {
     try {
-      var route = routes[id]
+      var route = routes[routeId]
       var fromURL = new URL(route.from)
       var toHostname = utils.urlToCaddyUpstream(route.to)
       var toURL = new URL(route.to)
