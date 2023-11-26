@@ -17,7 +17,7 @@ oauth2:
 staticClients:
 - id: 0c4860a4-ae2b-4f49-97d7-b581252a7166
   redirectURIs:
-  - 'http://localhost:2080/.pomerium/callback'
+  - 'http://localhost:2080/.veriflow/callback'
   name: 'Veriflow'
   secret: supersecret
 

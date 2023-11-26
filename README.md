@@ -249,6 +249,49 @@ The external service should respond with a JSON object containing routing inform
 
 The Dynamic Backend Configuration feature is especially useful for scenarios that require complex routing logic that can't be encoded within static configurations, providing more flexibility and control over request handling.
 
+## Advanced Route Matching
+
+Veriflow now supports "Advanced Route Matching," allowing for more nuanced and powerful control over route definitions. This enhancement leverages the functionality of Caddy as its data layer, enabling complex route matching scenarios.
+
+### Configuring Advanced Route Matching
+
+To use Advanced Route Matching, define the matching criteria in your policy configurations within the `config.yaml` file. Here’s an example:
+
+```yaml
+- from:
+    host:
+    - test-advanced-matchers.localtest.me
+    path:
+    - "/get"
+```
+
+In this configuration:
+
+- `host`: Defines the hostnames that the route should match. In this case, it’s `test-advanced-matchers.localtest.me`.
+- `path`: Specifies the paths that should match, such as requests to the `/get` path.
+
+### Matching Priority
+
+With Advanced Route Matching, if there are overlapping routes, the route listed first in the configuration file will take precedence. This ordering provides clear control over which rules are applied first in complex configurations.
+
+### Available Matchers
+
+Veriflow's use of Caddy as its data layer means a variety of matchers are supported for intricate routing configurations. These matchers, detailed in the [Caddy documentation](https://caddyserver.com/docs/json/apps/http/servers/routes/match/), include:
+
+- **Host**: For matching based on hostnames in the request.
+- **Path**: To match specific URL paths.
+- **Header**: For matching requests with specific header values.
+- **Query**: To match based on query string parameters.
+- **Method**: For matching specific HTTP methods (GET, POST, etc.).
+
+### Important Note for Path Matching
+
+When configuring Advanced Route Matching in Veriflow, especially when using path matching, it's crucial to include a match for the `/.veriflow/*` path. This step ensures that callback functions and other internal Veriflow mechanisms operate correctly.
+
+Here's how to modify the example configuration to incorporate this requirement:
+
+Advanced Route Matching in Veriflow significantly enhances routing capabilities, offering a sophisticated approach to managing access and directing traffic in complex network environments.
+
 ## Roadmap
 
 - [ ] Add device-aware context

@@ -51,3 +51,9 @@ Scenario('Testing Unauthorized Flow', async ({ I }) => {
     I.login()
     I.see("ERR_NOT_AUTHORIZED")
 });
+
+Scenario('Advanced matchers test', async ({ I }) => {
+    I.amOnPage('http://test-advanced-matchers.localtest.me:2080/get');
+    I.login();
+    I.see("x-veriflow-user-id")
+});
