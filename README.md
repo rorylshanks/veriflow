@@ -83,11 +83,11 @@ An example configuration file can be found in `example-config.yaml`. A breakdown
 - `trusted_ranges`: IP ranges that are trusted as being reverse proxies. Useful for running Veriflow behind proxies. 
 - `policy`: Policy for access control. This includes:
     - `title`: Title of the policy.
-    - `from`: Source URL or advanced matching policy (see below)
-    - `to`: Destination URL.
-    - `tls_skip_verify`: Whether to verify upstream TLS certificates. Default `true`
+    - `from`: Source URL or advanced matching policy For more details, see [docs/MATCHERS.md](docs/MATCHERS.md)
+    - `to`: Destination backend configuration. For more details, see [docs/BACKENDS.md](docs/BACKENDS.md)
+    - `tls_skip_verify`: Whether to ignore upstream certificate errors. Default `false`
     - `claims_headers`: Headers to include in the JWT claims.
-    - `jwt_override_audience`: Sets the `aud` key of the JWT added to the header specified in claims_headers. By default it is the hostname of the upstream
+    - `jwt_override_audience`: Sets the `aud` key of the JWT added to the header specified in claims_headers. By default it is the hostname of the upstream or 
     - `allowed_groups`: Groups allowed access.
     - `cors_allow_preflight`: Whether to allow preflight CORS requests (HTTP `OPTIONS` requests).
     - `remove_request_headers`: Headers to remove from the request.
@@ -126,7 +126,6 @@ The JSON file specified in `token_auth_config_file` should contain an object for
     "TOKEN": {
         "userId": "userId",
         "bypass_authz_check": false,
-        "bypass_dynamic_backend": false,
         "valid_domains": [
             "**"
         ]
@@ -139,7 +138,6 @@ In this object:
 - `"TOKEN"` is the token used for authorization.
 - `"userId"` is the ID of the user to whom the token belongs.
 - `"bypass_authz_check"` is used to bypass additional authz checks, by validating the user against the IdP. This is useful for machine accounts, however must be used with care.
-- `"bypass_dynamic_backend"` is used to bypass the dynamic backend function and route the user diretly to the default backend.
 - `"valid_domains"` is an array of domain patterns where the token is valid. Patterns can be globbed using the [Picomatch](https://github.com/micromatch/picomatch) library. These patterns should match the `from:` section in the route configuration of the policy. The `"**"` pattern signifies that the token is valid on all domains.
 
 Please note, for security purposes, it is essential to keep the JSON file and the policy configuration secure and confidential, as they contain sensitive access information.
@@ -199,96 +197,6 @@ When a token needs validation, Veriflow will send a POST request to the configur
 The external service must respond with a JSON object containing the token configuration. For an example token configuration please see the above documentation for the token file.
 
 It's essential to implement appropriate security measures when dealing with dynamic token authentication to prevent unauthorized access.
-
-## Dynamic Backend Configuration
-
-Veriflow introduces the Dynamic Backend Configuration feature to enhance its reverse proxy capabilities. This feature delegates the decision of which backend to send a user request to an external service.
-
-### Configuration of Dynamic Backend Configuration
-
-You can set up Dynamic Backend Configuration by adding the following parameters to your `config.yaml` file:
-
-```yaml
-dynamic_backend_config:
-  url: https://rbi.veriflow.dev
-  copy_headers:
-    - Header1
-  request_headers:
-    Auth: test123
-  request_body:
-    USER: user
-    URL: url
-    S3_BUCKET: veriflow-rbi-test
-```
-
-Here's what each parameter does:
-
-- `url`: The endpoint to which Veriflow will send a POST request to determine the appropriate backend for a given request.
-- `copy_headers`: A list of headers from the original request that should be forwarded to the external service.
-- `request_headers`: Headers to include in the request to the external service.
-- `request_body`: A JSON object with information about the user and the request, used by the external service to make routing decisions.
-
-### Expected Response
-
-The external service should respond with a JSON object containing routing information. For example:
-
-```json
-{
-  "url": "url_to_forward_to",
-  "headers": [
-    {
-      "key": "Header1",
-      "value": "headerValue1"
-    }
-  ]
-}
-```
-
-- `url`: The backend URL to which the user request should be forwarded.
-- `headers`: A list of headers to be added to the proxied request.
-
-The Dynamic Backend Configuration feature is especially useful for scenarios that require complex routing logic that can't be encoded within static configurations, providing more flexibility and control over request handling.
-
-## Advanced Route Matching
-
-Veriflow now supports "Advanced Route Matching," allowing for more nuanced and powerful control over route definitions. This enhancement leverages the functionality of Caddy as its data layer, enabling complex route matching scenarios.
-
-### Configuring Advanced Route Matching
-
-To use Advanced Route Matching, define the matching criteria in your policy configurations within the `config.yaml` file. Here’s an example:
-
-```yaml
-- from:
-    host:
-    - test-advanced-matchers.localtest.me
-    path:
-    - "/get"
-```
-
-In this configuration:
-
-- `host`: Defines the hostnames that the route should match. In this case, it’s `test-advanced-matchers.localtest.me`.
-- `path`: Specifies the paths that should match, such as requests to the `/get` path.
-
-### Matching Priority
-
-With Advanced Route Matching, if there are overlapping routes, the route listed first in the configuration file will take precedence. This ordering provides clear control over which rules are applied first in complex configurations.
-
-### Available Matchers
-
-Veriflow's use of Caddy as its data layer means a variety of matchers are supported for intricate routing configurations. These matchers, detailed in the [Caddy documentation](https://caddyserver.com/docs/json/apps/http/servers/routes/match/), include:
-
-- **Host**: For matching based on hostnames in the request.
-- **Path**: To match specific URL paths.
-- **Header**: For matching requests with specific header values.
-- **Query**: To match based on query string parameters.
-- **Method**: For matching specific HTTP methods (GET, POST, etc.).
-
-### Important Note for Path Matching
-
-When configuring Advanced Route Matching in Veriflow, especially when using path matching, it's crucial to include a match for the `/.veriflow/*` path. This step ensures that callback functions and other internal Veriflow mechanisms operate correctly.
-
-Advanced Route Matching in Veriflow significantly enhances routing capabilities, offering a sophisticated approach to managing access and directing traffic in complex network environments.
 
 ## Roadmap
 
