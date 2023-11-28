@@ -1,11 +1,22 @@
 import { getConfig } from "./config.js"
 import log from './logging.js';
-import { writeFile } from "fs/promises";
+import { writeFile, stat } from "fs/promises";
 import axios from 'axios';
 import utils from './utils.js';
 import errorpage from './errorpage.js'
 
-function saturateRoute(route, routeId) {
+function removeNullKeys(obj) {
+  Object.keys(obj).forEach(key => {
+      if (obj[key] === null) {
+          delete obj[key];
+      } else if (typeof obj[key] === 'object') {
+          removeNullKeys(obj[key]);
+      }
+  });
+  return obj
+}
+
+async function saturateRoute(route, routeId) {
   var config = getConfig()
 
   if (typeof route.from === 'object') {
@@ -46,13 +57,10 @@ function saturateRoute(route, routeId) {
     }
 
     if (route.to.source == "a" || route.to.source == "srv") {
-      dynamic_upstreams = [route.to]
-    } else {
-      return false
+      dynamic_upstreams = route.to
     }
-    
   }
-  
+
   // If the upstreams were not set by the above function, fallback to the default "static" upstream resolver
   if (!upstreams && !dynamic_upstreams) {
     var proxyTo = utils.urlToCaddyUpstream(route.to.url || route.to)
@@ -112,6 +120,9 @@ function saturateRoute(route, routeId) {
   }
   var tlsOptions = {}
   if (route.tls_client_cert_file && route.tls_client_key_file) {
+    // This will fail if the files do not exist. Required as caddy will crash if the files so not exist
+    await stat(route.tls_client_cert_file)
+    await stat(route.tls_client_key_file)
     tlsOptions["client_certificate_file"] = route.tls_client_cert_file
     tlsOptions["client_certificate_key_file"] = route.tls_client_key_file
   }
@@ -239,16 +250,17 @@ function saturateRoute(route, routeId) {
     ],
     terminal: true
   }
-  return routeModel
+  var cleanedObject = removeNullKeys(routeModel)
+  return cleanedObject
 }
 
-function saturateAllRoutesFromConfig(config) {
+async function saturateAllRoutesFromConfig(config) {
   var renderedRoutes = []
   var routes = config.policy
   for (var routeId in routes) {
     try {
       var route = routes[routeId]
-      var saturatedRoute = saturateRoute(route, routeId)
+      var saturatedRoute = await saturateRoute(route, routeId)
       renderedRoutes.push(saturatedRoute)
       // log.debug({ "message": "Added route", route })
     } catch (error) {
@@ -266,7 +278,7 @@ function saturateAllRoutesFromConfig(config) {
 async function generateCaddyConfig() {
   log.debug("Generating new caddy config")
   var config = getConfig()
-  var routes = saturateAllRoutesFromConfig(config)
+  var routes = await saturateAllRoutesFromConfig(config)
 
   const E_LOOP_DETECTED_HTML = await errorpage.renderErrorPage(503, "ERR_LOOP_DETECTED")
   const E_NOT_FOUND_HTML = await errorpage.renderErrorPage(404, "ERR_ROUTE_NOT_FOUND")
@@ -402,8 +414,8 @@ async function generateCaddyConfig() {
     }
   }
   try {
-    await updateCaddyConfig(superConfig)
     writeFile("caddy.json", JSON.stringify(superConfig))
+    await updateCaddyConfig(superConfig)
   } catch (error) {
     log.error({ message: "Failed to update running caddy config", error: error })
   }

@@ -59,3 +59,15 @@ Scenario('Advanced matchers test', async ({ I }) => {
     I.amOnPage('http://test-advanced-matchers.localtest.me:2080/should404');
     I.see("ERR_ROUTE_NOT_FOUND")
 });
+
+Scenario('Dynamic Upstreams Test', async ({ I }) => {
+    I.amOnPage('http://test-dynamic-upstreams.localtest.me:2080/get');
+    I.login();
+    I.see("x-veriflow-user-id")
+});
+
+Scenario('Dynamic Upstreams Test SRV', async ({ I }) => {
+    I.amOnPage('http://test-dynamic-upstreams-srv.localtest.me:2080/get');
+    I.login();
+    I.see("x-veriflow-user-id")
+});

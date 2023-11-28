@@ -88,3 +88,18 @@ policy:
   to: http://localhost:8080
   allowed_groups:
   - All Users
+
+- from: http://test-dynamic-upstreams.localtest.me
+  to: 
+    source: a
+    name: localtest.me
+    port: "8080"
+  allowed_groups:
+  - All Users
+
+- from: http://test-dynamic-upstreams-srv.localtest.me
+  to: 
+    source: srv
+    name: _e2e._tcp.citest.dev.veriflow.dev
+  allowed_groups:
+  - All Users
