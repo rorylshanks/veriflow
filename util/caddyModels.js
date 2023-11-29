@@ -50,6 +50,12 @@ async function saturateRoute(route, routeId) {
       }
     ]
   }
+  // Required to be here due to usage in the dynamic backend configuration
+  var copyHeaders = {
+    "X-Veriflow-User-Id": [
+      "{http.reverse_proxy.header.X-Veriflow-User-Id}"
+    ]
+  }
 
   var upstreams = null
   var dynamic_upstreams = null
@@ -66,7 +72,7 @@ async function saturateRoute(route, routeId) {
         }
       ]
       if (route.to.copy_headers) {
-        for (var header of route.to.copy_headers.copy_headers) {
+        for (var header of route.to.copy_headers) {
           copyHeaders[header] = [
             `{http.reverse_proxy.header.${header}}`
           ]
@@ -100,11 +106,6 @@ async function saturateRoute(route, routeId) {
 
 
 
-  var copyHeaders = {
-    "X-Veriflow-User-Id": [
-      "{http.reverse_proxy.header.X-Veriflow-User-Id}"
-    ]
-  }
   if (route.claims_headers) {
     var headersArray = Object.keys(route.claims_headers)
     for (var header of headersArray) {
