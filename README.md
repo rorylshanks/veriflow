@@ -86,6 +86,7 @@ An example configuration file can be found in `example-config.yaml`. A breakdown
     - `from`: Source URL or advanced matching policy For more details, see [docs/MATCHERS.md](docs/MATCHERS.md)
     - `to`: Destination backend configuration. For more details, see [docs/BACKENDS.md](docs/BACKENDS.md)
     - `tls_skip_verify`: Whether to ignore upstream certificate errors. Default `false`
+    - `allow_public_unauthenticated_access`: Whether to allow public access to the route (note this will disable all Veriflow user-related functionality). Default `false`
     - `claims_headers`: Headers to include in the JWT claims.
     - `jwt_override_audience`: Sets the `aud` key of the JWT added to the header specified in claims_headers. By default it is the hostname of the upstream or 
     - `allowed_groups`: Groups allowed access.
@@ -210,8 +211,6 @@ See the [open issues](https://github.com/rorylshanks/veriflow/issues) for a full
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-
-
 <!-- CONTRIBUTING -->
 ## Contributing
 
@@ -227,8 +226,6 @@ Don't forget to give the project a star! Thanks again!
 5. Open a Pull Request
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
 
 <!-- LICENSE -->
 ## License
