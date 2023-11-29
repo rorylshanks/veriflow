@@ -60,52 +60,6 @@ async function saturateRoute(route, routeId) {
 
   var upstreams = null
   var dynamic_upstreams = null
-  // Try to use dynamic backends somehow, either ative caddy or Veriflow
-  if (typeof route.to === 'object') {
-    // If dynamic backends are enabled, proxy to whatever veriflow tells caddy to proxy to for that request
-    if (route.to.source == "veriflow_dynamic") {
-      var dynamic_backend_url_header_name = "X-Veriflow-Dynamic-Backend-Url"
-      copyHeaders[dynamic_backend_url_header_name]
-      var proxyTo = `{http.reverse_proxy.header.${dynamic_backend_url_header_name}}`
-      upstreams = [
-        {
-          dial: proxyTo
-        }
-      ]
-      if (route.to.copy_headers) {
-        for (var header of route.to.copy_headers.copy_headers) {
-          copyHeaders[header] = [
-            `{http.reverse_proxy.header.${header}}`
-          ]
-        }
-      }
-    }
-
-    if (route.to.source == "a" || route.to.source == "srv") {
-      dynamic_upstreams = route.to
-    }
-  }
-
-  // If the upstreams were not set by the above function, fallback to the default "static" upstream resolver
-  if (!upstreams && !dynamic_upstreams) {
-    var proxyTo = utils.urlToCaddyUpstream(route.to.url || route.to)
-    var toURL = new URL(route.to.url || route.to)
-    var isSecure = false
-    if (toURL.protocol.includes("https")) {
-      isSecure = true
-    }
-    if (route.https_upstream) {
-      isSecure = true
-    }
-    upstreams = [
-      {
-        dial: proxyTo
-      }
-    ]
-  }
-
-  var upstreams = null
-  var dynamic_upstreams = null
   // Try to use dynamic backends somehow, either Caddy or Veriflow
   if (typeof route.to === 'object') {
     // If dynamic backends are enabled, proxy to whatever veriflow tells caddy to proxy to for that request
