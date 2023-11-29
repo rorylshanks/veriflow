@@ -50,7 +50,13 @@ async function saturateRoute(route, routeId) {
       }
     ]
   }
+
   // Required to be here due to usage in the dynamic backend configuration
+  var copyHeaders = {
+    "X-Veriflow-User-Id": [
+      "{http.reverse_proxy.header.X-Veriflow-User-Id}"
+    ]
+  }
 
   var upstreams = null
   var dynamic_upstreams = null
@@ -95,14 +101,6 @@ async function saturateRoute(route, routeId) {
       {
         dial: proxyTo
       }
-    ]
-  }
-
-
-
-  var copyHeaders = {
-    "X-Veriflow-User-Id": [
-      "{http.reverse_proxy.header.X-Veriflow-User-Id}"
     ]
   }
 
