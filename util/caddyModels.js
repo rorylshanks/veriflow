@@ -1,11 +1,22 @@
 import { getConfig } from "./config.js"
 import log from './logging.js';
-import { writeFile } from "fs/promises";
+import { writeFile, stat } from "fs/promises";
 import axios from 'axios';
 import utils from './utils.js';
 import errorpage from './errorpage.js'
 
-function saturateRoute(route, routeId) {
+function removeNullKeys(obj) {
+  Object.keys(obj).forEach(key => {
+      if (obj[key] === null) {
+          delete obj[key];
+      } else if (typeof obj[key] === 'object') {
+          removeNullKeys(obj[key]);
+      }
+  });
+  return obj
+}
+
+async function saturateRoute(route, routeId) {
   var config = getConfig()
 
   if (typeof route.from === 'object') {
@@ -22,15 +33,53 @@ function saturateRoute(route, routeId) {
     ]
   }
 
-  var proxyTo = utils.urlToCaddyUpstream(route.to)
-  var toURL = new URL(route.to)
-  var isSecure = false
-  if (toURL.protocol.includes("https")) {
-    isSecure = true
+  var upstreams = null
+  var dynamic_upstreams = null
+  // Try to use dynamic backends somehow, either ative caddy or Veriflow
+  if (typeof route.to === 'object') {
+    // If dynamic backends are enabled, proxy to whatever veriflow tells caddy to proxy to for that request
+    if (route.to.source == "veriflow_dynamic") {
+      var dynamic_backend_url_header_name = "X-Veriflow-Dynamic-Backend-Url"
+      copyHeaders[dynamic_backend_url_header_name]
+      var proxyTo = `{http.reverse_proxy.header.${dynamic_backend_url_header_name}}`
+      upstreams = [
+        {
+          dial: proxyTo
+        }
+      ]
+      if (route.to.copy_headers) {
+        for (var header of route.to.copy_headers.copy_headers) {
+          copyHeaders[header] = [
+            `{http.reverse_proxy.header.${header}}`
+          ]
+        }
+      }
+    }
+
+    if (route.to.source == "a" || route.to.source == "srv") {
+      dynamic_upstreams = route.to
+    }
   }
-  if (route.https_upstream) {
-    isSecure = true
+
+  // If the upstreams were not set by the above function, fallback to the default "static" upstream resolver
+  if (!upstreams && !dynamic_upstreams) {
+    var proxyTo = utils.urlToCaddyUpstream(route.to.url || route.to)
+    var toURL = new URL(route.to.url || route.to)
+    var isSecure = false
+    if (toURL.protocol.includes("https")) {
+      isSecure = true
+    }
+    if (route.https_upstream) {
+      isSecure = true
+    }
+    upstreams = [
+      {
+        dial: proxyTo
+      }
+    ]
   }
+
+
 
   var copyHeaders = {
     "X-Veriflow-User-Id": [
@@ -52,19 +101,7 @@ function saturateRoute(route, routeId) {
       ]
     }
   }
-  // If dynamic backends are enabled, proxy to whatever veriflow tells caddy to proxy to for that request
-  if (route.dynamic_backend_config) {
-    var dynamic_backend_url_header_name = "X-Veriflow-Dynamic-Backend-Url"
-    copyHeaders[dynamic_backend_url_header_name]
-    proxyTo = `{http.reverse_proxy.header.${dynamic_backend_url_header_name}}`
-    if (route.dynamic_backend_config.copy_headers) {
-      for (var header of route.dynamic_backend_config.copy_headers) {
-        copyHeaders[header] = [
-          `{http.reverse_proxy.header.${header}}`
-        ]
-      }
-    }
-  }
+
   if (route.remove_request_headers) {
     var requestHeadersToDelete = route.remove_request_headers
   }
@@ -83,6 +120,9 @@ function saturateRoute(route, routeId) {
   }
   var tlsOptions = {}
   if (route.tls_client_cert_file && route.tls_client_key_file) {
+    // This will fail if the files do not exist. Required as caddy will crash if the files so not exist
+    await stat(route.tls_client_cert_file)
+    await stat(route.tls_client_key_file)
     tlsOptions["client_certificate_file"] = route.tls_client_cert_file
     tlsOptions["client_certificate_key_file"] = route.tls_client_key_file
   }
@@ -200,11 +240,8 @@ function saturateRoute(route, routeId) {
                     set: requestHeadersToSet || []
                   }
                 },
-                upstreams: [
-                  {
-                    dial: proxyTo
-                  }
-                ]
+                upstreams, // This is set to null if dynamic_upstreams are used (source a, srv)
+                dynamic_upstreams // This is set to null if there are no dynamic_upstreams used
               }
             ]
           }
@@ -213,16 +250,17 @@ function saturateRoute(route, routeId) {
     ],
     terminal: true
   }
-  return routeModel
+  var cleanedObject = removeNullKeys(routeModel)
+  return cleanedObject
 }
 
-function saturateAllRoutesFromConfig(config) {
+async function saturateAllRoutesFromConfig(config) {
   var renderedRoutes = []
   var routes = config.policy
   for (var routeId in routes) {
     try {
       var route = routes[routeId]
-      var saturatedRoute = saturateRoute(route, routeId)
+      var saturatedRoute = await saturateRoute(route, routeId)
       renderedRoutes.push(saturatedRoute)
       // log.debug({ "message": "Added route", route })
     } catch (error) {
@@ -240,7 +278,7 @@ function saturateAllRoutesFromConfig(config) {
 async function generateCaddyConfig() {
   log.debug("Generating new caddy config")
   var config = getConfig()
-  var routes = saturateAllRoutesFromConfig(config)
+  var routes = await saturateAllRoutesFromConfig(config)
 
   const E_LOOP_DETECTED_HTML = await errorpage.renderErrorPage(503, "ERR_LOOP_DETECTED")
   const E_NOT_FOUND_HTML = await errorpage.renderErrorPage(404, "ERR_ROUTE_NOT_FOUND")
@@ -376,8 +414,8 @@ async function generateCaddyConfig() {
     }
   }
   try {
-    await updateCaddyConfig(superConfig)
     writeFile("caddy.json", JSON.stringify(superConfig))
+    await updateCaddyConfig(superConfig)
   } catch (error) {
     log.error({ message: "Failed to update running caddy config", error: error })
   }
