@@ -71,3 +71,8 @@ Scenario('Dynamic Upstreams Test SRV', async ({ I }) => {
     I.login();
     I.see("x-veriflow-user-id")
 });
+
+Scenario('Unauthenticated Access test', async ({ I }) => {
+    I.amOnPage('http://test-unauthenticated-access.localtest.me:2080/get');
+    I.see("x-public-access")
+});

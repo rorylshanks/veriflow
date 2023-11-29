@@ -5,12 +5,30 @@ import axios from 'axios';
 import utils from './utils.js';
 import errorpage from './errorpage.js'
 
+// THis function removes null items from the individual routes
+// In the below saturateRoute function we include several configuration items that may or may not be set based on the config, however must not be present when sending the config to Caddy
+// So to keep the functions realtively simple and clean, we simply remove all null elements after the complete route is set. As this is not in the "hot path" and therefore not performance critical,
+// Having this unoptimized logic should be fine.
 function removeNullKeys(obj) {
   Object.keys(obj).forEach(key => {
       if (obj[key] === null) {
           delete obj[key];
       } else if (typeof obj[key] === 'object') {
           removeNullKeys(obj[key]);
+      }
+  });
+  return obj
+}
+
+// Caddy is sensitive about its config, and a lot of things in the config require that all values are strings.
+// For example, when setting request headers, all the header values must be strings and it will fail to load if they are a number or a boolean
+// Same for the dynamic upstreams. The "port" for the dynamic upstreams MUST be a string, and not a number. Hence the purpose of this function
+function convertNumbersAndBooleansToStrings(obj) {
+  Object.keys(obj).forEach(key => {
+      if (typeof obj[key] === 'number' || typeof obj[key] === 'boolean') {
+          obj[key] = obj[key].toString();
+      } else if (typeof obj[key] === 'object' && obj[key] !== null) {
+          convertNumbersAndBooleansToStrings(obj[key]);
       }
   });
   return obj
@@ -35,7 +53,7 @@ async function saturateRoute(route, routeId) {
 
   var upstreams = null
   var dynamic_upstreams = null
-  // Try to use dynamic backends somehow, either ative caddy or Veriflow
+  // Try to use dynamic backends somehow, either Caddy or Veriflow
   if (typeof route.to === 'object') {
     // If dynamic backends are enabled, proxy to whatever veriflow tells caddy to proxy to for that request
     if (route.to.source == "veriflow_dynamic") {
@@ -57,11 +75,12 @@ async function saturateRoute(route, routeId) {
     }
 
     if (route.to.source == "a" || route.to.source == "srv") {
-      dynamic_upstreams = route.to
+      dynamic_upstreams = convertNumbersAndBooleansToStrings(route.to)
     }
   }
 
   // If the upstreams were not set by the above function, fallback to the default "static" upstream resolver
+  // If it fails, the route will not be rendered and an error will be thrown
   if (!upstreams && !dynamic_upstreams) {
     var proxyTo = utils.urlToCaddyUpstream(route.to.url || route.to)
     var toURL = new URL(route.to.url || route.to)
@@ -118,6 +137,7 @@ async function saturateRoute(route, routeId) {
       requestHeadersToSet[header] = [route.set_request_headers[header]]
     }
   }
+  requestHeadersToSet = convertNumbersAndBooleansToStrings(requestHeadersToSet)
   var tlsOptions = {}
   if (route.tls_client_cert_file && route.tls_client_key_file) {
     // This will fail if the files do not exist. Required as caddy will crash if the files so not exist
@@ -129,6 +149,7 @@ async function saturateRoute(route, routeId) {
   if (route.tls_skip_verify) {
     tlsOptions["insecure_skip_verify"] = true
   }
+  // If no TLS options are set, and the route is "not secure" (i.e. not an HTTPS route) this var must be set to null to remove it from the Caddy config
   if ((Object.keys(tlsOptions).length == 0) && !isSecure) {
     tlsOptions = null
   }
