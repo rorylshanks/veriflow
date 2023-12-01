@@ -104,11 +104,6 @@ An example configuration file can be found in `example-config.yaml`. A breakdown
     - `token_auth_dynamic_config`: Configuration for dynamic token authentication services
         - `url`: URL of the external token authentication service
         - `headers`: A map of headers that will be sent downstream to the authentication service
-    - `dynamic_backend_config`: Configuration for dynamic backends (see below documentation)
-        - `url`: URL of the dynamic backend service
-        - `copy_headers`: Headers to copy from the dynamic backend service to the downstream service.
-        - `request_headers`: Headers to add to the request to the dynamic backend service
-        - `request_body`: Body to post to the dynamic backend service. The key `user` is always added with the user ID of the currently authenticated user
 
 ## Token Authentication in Veriflow
 
