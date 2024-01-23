@@ -7,7 +7,8 @@ redis_host: localhost
 redis_port: 6379
 idp_client_id: 0c4860a4-ae2b-4f49-97d7-b581252a7166
 idp_client_secret: supersecret
-idp_provider: none
+idp_provider: localfile
+idp_provider_localfile_location: output.json
 idp_provider_scope: openid email profile
 idp_provider_user_id_claim: email
 idp_provider_url: http://localhost:5556/dex
