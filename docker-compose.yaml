@@ -9,6 +9,8 @@ services:
       context: "."
       dockerfile: Dockerfile.dev
     network_mode: host
+    depends_on:
+      - redis
     volumes:
       - $PWD:/appdata
       - /secrets:/secrets

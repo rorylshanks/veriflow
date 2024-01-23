@@ -34,6 +34,8 @@ policy:
   claims_headers:
     X-Pomerium-Claim-Email: mail
     X-Pomerium-Jwt-Assertion: jwt
+  allowed_domains:
+    - test.com
   allowed_groups:
     - All Users
   cors_allow_preflight: true
