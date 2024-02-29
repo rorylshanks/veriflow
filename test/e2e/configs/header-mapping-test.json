@@ -2,5 +2,9 @@
     "test@veriflow.dev": {
         "Authorization": "ThisIsATestHeaderFromTheHeaderMapping",
         "X-test-Header": "another test"
+    },
+    "All Users": {
+        "Authorization": "ThisIsATestHeaderFromTheHeaderMapping",
+        "X-test-Header": "another test"
     }
 }
