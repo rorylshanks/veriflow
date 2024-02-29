@@ -36,6 +36,8 @@ Scenario('Testing Header Mapping', async ({ I }) => {
     I.amOnPage('http://test-header-mapping.localtest.me:2080/');
     I.login();
     I.see("ThisIsATestHeaderFromTheHeaderMapping")
+    I.see("TestHeaderFromGroup")
+    I.dontSee("TestAbsentHeaderFromGroup")
 });
 
 Scenario('Testing Token Auth', async ({ I }) => {
