@@ -68,6 +68,7 @@ policy:
   request_header_map_file: "/configs/header-mapping-test.json"
   request_header_map_headers:
     - Authorization
+    - TestHeaderFromGroup
   allowed_groups:
   - All Users
 
