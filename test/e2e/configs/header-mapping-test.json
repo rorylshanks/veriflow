@@ -2,5 +2,11 @@
     "test@veriflow.dev": {
         "Authorization": "ThisIsATestHeaderFromTheHeaderMapping",
         "X-test-Header": "another test"
+    },
+    "test-header-group": {
+        "TestHeaderFromGroup": "TestHeaderFromGroup"
+    },
+    "test-header-group-absent": {
+        "TestAbsentHeaderFromGroup": "TestAbsentHeaderFromGroup"
     }
 }

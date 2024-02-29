@@ -97,7 +97,7 @@ An example configuration file can be found in `example-config.yaml`. A breakdown
     - `token_auth_header`: The name of the HTTP header that should contain the token (e.g., `Authorization`).
     - `token_auth_header_prefix`: The prefix that should be present before the token in the HTTP header (e.g., `"Basic "`).
     - `token_auth_is_base64_encoded`: Boolean value indicating whether the token is Base64 encoded (`true` or `false`).
-    - `request_header_map_file`: This parameter specifies the location of the external JSON file containing the header definitions for per-user request header mapping (e.g., `request_header_map.json`).
+    - `request_header_map_file`: This parameter specifies the location of the external JSON file containing the header definitions for per-user and per-group request header mapping (e.g., `request_header_map.json`).
     - `request_header_map_headers`: This is a list of the names of the HTTP headers that should be set for the requests for per-user request header mapping
     - `tls_client_cert_file`: Path to the client certificate file that should be used for upstream authentication (mTLS)
     - `tls_client_key_file`: Path to the client certificate key that should be used for upstream authentication (mTLS)
@@ -146,7 +146,7 @@ The JSON file specified in `request_header_map_file` should contain an object fo
 
 ```json
 {
-    "ENTER_USER_ID_HERE": {
+    "ENTER_USER_ID_OR_GROUP_ID_HERE": {
         "Authorization": "test",
         "X-test-Header": "another test"
     }
@@ -155,8 +155,8 @@ The JSON file specified in `request_header_map_file` should contain an object fo
 
 In this object:
 
-- `"ENTER_USER_ID_HERE"` should be replaced with the ID of the user for whom you're setting the headers.
-- The key-value pairs inside the user's object correspond to the headers you wish to set, with the header name as the key and the header value as the value.
+- `"ENTER_USER_ID_OR_GROUP_ID_HERE"` should be replaced with the ID of the user or group for whom you're setting the headers.
+- The key-value pairs inside the user or group object correspond to the headers you wish to set, with the header name as the key and the header value as the value.
 
 Upon configuration, Veriflow will automatically add the requested headers to each upstream request based on the user that accesses the service. This allows for personalized and context-specific request handling. Please remember to keep your JSON file and the policy configuration secure due to the sensitive nature of header information.
 
