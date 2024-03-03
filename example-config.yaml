@@ -6,6 +6,7 @@ cookie_secret: "ThisIsAFakeCookieSecret"
 cookie_settings:
   sameSite: "none"
   secure: true
+  maxAge: 86400
 redis_connection_string: redis://127.0.0.1:6379
 idp_client_id: 00000000-1111-2222-3333-444444444444
 idp_client_secret: "FAKEFAKEFAKEaingaigaeW9eic4ok3oojietheeFAKEFAKEFAKE"
