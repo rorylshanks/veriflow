@@ -3,8 +3,7 @@ auth_listen_port: 3000
 data_listen_port: 2080
 service_url: http://localhost:2080
 cookie_secret: "fakeCookieSecret"
-redis_host: localhost
-redis_port: 6379
+redis_connection_string: redis://127.0.0.1:6379
 idp_client_id: 0c4860a4-ae2b-4f49-97d7-b581252a7166
 idp_client_secret: supersecret
 idp_provider: localfile

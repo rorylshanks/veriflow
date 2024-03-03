@@ -29,6 +29,7 @@
     "express-session": "^1.17.3",
     "form-data": "^4.0.0",
     "google-auth-library": "^9.4.2",
+    "ioredis": "^5.3.2",
     "isomorphic-fetch": "^3.0.0",
     "js-yaml": "^4.1.0",
     "jsonwebtoken": "^9.0.2",
@@ -37,7 +38,6 @@
     "pem-jwk": "^2.0.0",
     "picomatch": "^3.0.1",
     "pino": "^8.16.1",
-    "redis": "^4.6.10",
     "timestring": "^7.0.0"
   },
   "devDependencies": {

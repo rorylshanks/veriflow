@@ -65,8 +65,9 @@ An example configuration file can be found in `example-config.yaml`. A breakdown
 - `cookie_settings`: Settings related to the session cookie set by Veriflow for each site. 
     - `sameSite`: Sets the sameSite attribute of the cookie. Default "Lax"
     - `secure`: Sets whether the cookie should be secure. Default "false"
-- `redis_host`: Hostname of the Redis database server.
-- `redis_port`: Port of the Redis database server.
+- `redis_connection_string`: Connection string for the redis server to connect to (e.g. redis://127.0.0.1:6379)
+- `redis_host`: Hostname of the Redis database server. (deprecated, for backwards compatibility only)
+- `redis_port`: Port of the Redis database server. (deprecated, for backwards compatibility only)
 - `idp_client_id`: Client ID for communication with the Identity Provider (IdP).
 - `idp_client_secret`: Secret key for authenticating with the Identity Provider (IdP).
 - `idp_tenant_id`: Identifier for the specific tenant in the Identity Provider's system.
@@ -88,7 +89,7 @@ An example configuration file can be found in `example-config.yaml`. A breakdown
     - `tls_skip_verify`: Whether to ignore upstream certificate errors. Default `false`
     - `allow_public_unauthenticated_access`: Whether to allow public access to the route (note this will disable all Veriflow user-related functionality). Default `false`
     - `claims_headers`: Headers to include in the JWT claims.
-    - `jwt_override_audience`: Sets the `aud` key of the JWT added to the header specified in claims_headers. By default it is the hostname of the upstream or 
+    - `jwt_override_audience`: Sets the `aud` key of the JWT added to the header specified in claims_headers. By default it is the hostname of the `to`
     - `allowed_groups`: Groups allowed access.
     - `cors_allow_preflight`: Whether to allow preflight CORS requests (HTTP `OPTIONS` requests).
     - `remove_request_headers`: Headers to remove from the request.
