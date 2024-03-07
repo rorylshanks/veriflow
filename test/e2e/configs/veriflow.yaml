@@ -71,6 +71,22 @@ policy:
   allowed_groups:
   - All Users
 
+- from: http://test-header-mapping-inline.localtest.me
+  to: http://localhost:8080
+  request_header_map_inline: 
+    test@veriflow.dev:
+      Authorization: ThisIsATestHeaderFromTheHeaderMapping
+      X-test-Header: another test
+    test-header-group:
+      TestHeaderFromGroup: TestHeaderFromGroup
+    test-header-group-absent:
+      TestAbsentHeaderFromGroup: TestAbsentHeaderFromGroup
+  request_header_map_headers:
+    - Authorization
+    - TestHeaderFromGroup
+  allowed_groups:
+  - All Users
+
 - from: http://test-token-auth.localtest.me
   to: http://localhost:8080
   token_auth_config_file: "/configs/token-auth-test.json"

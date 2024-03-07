@@ -40,6 +40,14 @@ Scenario('Testing Header Mapping', async ({ I }) => {
     I.dontSee("TestAbsentHeaderFromGroup")
 });
 
+Scenario('Testing Header Mapping Inline', async ({ I }) => {
+    I.amOnPage('http://test-header-mapping-inline.localtest.me:2080/');
+    I.login();
+    I.see("ThisIsATestHeaderFromTheHeaderMapping")
+    I.see("TestHeaderFromGroup")
+    I.dontSee("TestAbsentHeaderFromGroup")
+});
+
 Scenario('Testing Token Auth', async ({ I }) => {
     I.setPuppeteerRequestHeaders({
         'Authorization': 'Bearer ThisIsATestToken',

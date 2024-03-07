@@ -53,9 +53,12 @@ policy:
   token_auth_header_prefix: "Basic "
   token_auth_is_base64_encoded: true
   request_header_map_file: request_header_map.json
-  jwt_override_audience: httpbin-test.localhost
+  request_header_map_inline:
+    group-name:
+      Authorization: fake
   request_header_map_headers:
     - Authorization
     - X-Test-Header
+  jwt_override_audience: httpbin-test.localhost
   tls_client_cert_file: path/to/cert.pem
   tls_client_key_file: path/to/key.pem
