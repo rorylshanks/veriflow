@@ -54,6 +54,24 @@ You may specify a different configuration file location using the `CONFIG_FILE` 
 docker run -p 2080:2080 -e CONFIG_FILE=/etc/config.yaml -v config.yaml:/etc/config.yaml rorylshanks/veriflow:latest
 ```
 
+## Veriflow Signing Key
+
+Veriflow uses JSON Web Tokens (JWTs) to authenticate requests and responses. JWTs are JSOn objects that are signed by a specific private key. It is critical for security that the private key that is used is randomly generated and not shared or stored publicly. 
+
+To generate a new signing key, you can run the below command on any linux system 
+
+```
+openssl genrsa 4096 | base64 -w0
+```
+
+Or the below command on macOS
+
+```
+openssl genrsa 4096 | base64 -b0
+```
+
+This will generate a base64 encoded 4096-bit RSA private key that can be used in the Veriflow configuration. Do NOT reuse any example signing keys you find on the internet, as this will allow anyone to impersonate users on Veriflow.
+
 ## Veriflow Configuration Options
 
 An example configuration file can be found in `example-config.yaml`. A breakdown of each option is below
