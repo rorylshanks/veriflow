@@ -5,6 +5,8 @@ import log from './logging.js';
 import reloadCaddy from './caddyModels.js';
 import chokidar from 'chokidar';
 
+let foundPort = false
+
 let configFileLocation = process.env.CONFIG_FILE || "config.yaml"
 
 let currentConfig = yaml.load(fsSync.readFileSync(configFileLocation, 'utf8'))
@@ -55,9 +57,30 @@ function getRedirectBasepath() {
     return redirectBasePath
 }
 
+function getAuthListenPort() {
+    if (foundPort) {
+        return foundPort
+    }
+    var config = getConfig()
+    var metricsListenPort = config.metrics_listen_port
+    var dataListenPort = config.data_listen_port
+    var authListenPort = 9847
+    while (foundPort == false) {
+        if ((metricsListenPort == authListenPort) || (dataListenPort == authListenPort)) {
+            log.info({ message: `Port ${authListenPort} is taken, trying another port for the auth service`})
+            authListenPort++
+        } else {
+            foundPort = authListenPort
+            log.info({ message: `Found port ${foundPort} for the auth service to listen on`})
+        }
+    }
+    return foundPort
+}
+
 export {
     reloadConfig,
     getConfig,
     getRouteFromRequest,
-    getRedirectBasepath
+    getRedirectBasepath,
+    getAuthListenPort
 };

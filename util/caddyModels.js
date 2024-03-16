@@ -1,4 +1,4 @@
-import { getConfig } from "./config.js"
+import { getConfig, getAuthListenPort } from "./config.js"
 import log from './logging.js';
 import { writeFile, stat } from "fs/promises";
 import axios from 'axios';
@@ -173,7 +173,7 @@ async function saturateRoute(route, routeId) {
                         handler: "reverse_proxy",
                         upstreams: [
                           {
-                            dial: "localhost:" + config.auth_listen_port
+                            dial: "localhost:" + getAuthListenPort()
                           }
                         ]
                       }
@@ -243,7 +243,7 @@ async function saturateRoute(route, routeId) {
                 },
                 upstreams: [
                   {
-                    dial: "localhost:" + config.auth_listen_port
+                    dial: "localhost:" + getAuthListenPort()
                   }
                 ]
               }
@@ -360,7 +360,7 @@ async function generateCaddyConfig() {
                 "handler": "reverse_proxy",
                 "upstreams": [
                   {
-                    "dial": "localhost:" + config.auth_listen_port
+                    "dial": "localhost:" + getAuthListenPort()
                   }
                 ]
               }

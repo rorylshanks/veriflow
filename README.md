@@ -76,16 +76,15 @@ This will generate a base64 encoded 4096-bit RSA private key that can be used in
 
 An example configuration file can be found in `example-config.yaml`. A breakdown of each option is below
 
-- `auth_listen_port`: Port on which the authentication server listens.
 - `data_listen_port`: Port on which the data server listens.
+- `metrics_listen_port`: Port where the metrics server should listen.
 - `service_url`: URL of the Veriflow service.
 - `cookie_secret`: Secret key used for cookie encryption and verification.
 - `cookie_settings`: Settings related to the session cookie set by Veriflow for each site. 
     - `sameSite`: Sets the sameSite attribute of the cookie. Default "Lax"
     - `secure`: Sets whether the cookie should be secure. Default "false"
+    - `maxAge`: Sets the maximim time of the authenticated sessions in milliseconds (default 3 hours [3600000])
 - `redis_connection_string`: Connection string for the redis server to connect to (e.g. redis://127.0.0.1:6379)
-- `redis_host`: Hostname of the Redis database server. (deprecated, for backwards compatibility only)
-- `redis_port`: Port of the Redis database server. (deprecated, for backwards compatibility only)
 - `idp_client_id`: Client ID for communication with the Identity Provider (IdP).
 - `idp_client_secret`: Secret key for authenticating with the Identity Provider (IdP).
 - `idp_tenant_id`: Identifier for the specific tenant in the Identity Provider's system.
@@ -95,7 +94,6 @@ An example configuration file can be found in `example-config.yaml`. A breakdown
 - `idp_provider_url`: URL of the Identity Provider service.
 - `idp_refresh_directory_interval`: How often the directory information should be refreshed from the Identity Provider.
 - `idp_refresh_directory_timeout`: How long the system should wait for a directory refresh before timing out.
-- `metrics_address`: Address and port where the metrics server should listen.
 - `signing_key`: RSA private key for signing JWT tokens, encoded in base64.
 - `redirect_base_path`: Base path for redirection URLs. By default `/.veriflow`
 - `jwks_path`: Location of the JSON Web Key Set (JWKS) that can be called to get the public keys of the signing key.

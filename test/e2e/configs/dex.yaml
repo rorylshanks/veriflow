@@ -1,4 +1,4 @@
-issuer: http://127.0.0.1:5556/dex
+issuer: http://dex.localtest.me:5556/dex
 storage:
   type: sqlite3
   config:
@@ -18,6 +18,7 @@ staticClients:
 - id: 0c4860a4-ae2b-4f49-97d7-b581252a7166
   redirectURIs:
   - 'http://localhost:2080/.veriflow/callback'
+  - 'http://veriflow.localtest.me/.veriflow/callback'
   name: 'Veriflow'
   secret: supersecret
 
