@@ -47,10 +47,17 @@ function getRouteFromRequest(req) {
     }
 }
 
-
+function getRedirectBasepath() {
+    var redirectBasePath = getConfig().redirect_base_path || "/.veriflow"
+    if (!redirectBasePath.startsWith("/")) {
+        redirectBasePath = `/${redirectBasePath}`
+    }
+    return redirectBasePath
+}
 
 export {
     reloadConfig,
     getConfig,
-    getRouteFromRequest
+    getRouteFromRequest,
+    getRedirectBasepath
 };

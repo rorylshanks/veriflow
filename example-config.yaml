@@ -1,4 +1,10 @@
 ---
+ui:
+  error_page_background: https://images.unsplash.com/photo-1702217172431-268c4f58e401?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&dl=hector-john-periquin-Vz156fJNZzM-unsplash.jpg
+  error_page_footer_text: Internal Systems - Authorized Access Only
+  logo_image_src: https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Google_2015_logo.svg/1200px-Google_2015_logo.svg.png
+  error_page_show_error_code: false
+
 auth_listen_port: 3000
 data_listen_port: 2080
 service_url: https://veriflow.codemo.re
