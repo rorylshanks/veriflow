@@ -15,6 +15,7 @@ Scenario('HTTPS Upstream Test', async ({ I }) => {
 Scenario('Removing headers', async ({ I }) => {
     I.amOnPage('http://test-removing-headers.localtest.me/get');
     I.login();
+    I.see("user-agent")
     I.dontSee("x-veriflow-user-id")
 });
 
