@@ -110,15 +110,15 @@ async function saturateRoute(route, routeId) {
   if (route.claims_headers) {
     var headersArray = Object.keys(route.claims_headers)
     for (var header of headersArray) {
-      copyHeaders[header] = [
-        `{http.reverse_proxy.header.${header}}`
+      copyHeaders[utils.convertHeaderCase(header)] = [
+        `{http.reverse_proxy.header.${utils.convertHeaderCase(header)}}`
       ]
     }
   }
   if (route.request_header_map_headers) {
     for (var header of route.request_header_map_headers) {
-      copyHeaders[header] = [
-        `{http.reverse_proxy.header.${header}}`
+      copyHeaders[utils.convertHeaderCase(header)] = [
+        `{http.reverse_proxy.header.${utils.convertHeaderCase(header)}}`
       ]
     }
   }
