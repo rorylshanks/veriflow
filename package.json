@@ -38,6 +38,7 @@
     "pem-jwk": "^2.0.0",
     "picomatch": "^4.0.1",
     "pino": "^8.19.0",
+    "prom-client": "^15.1.0",
     "timestring": "^7.0.0"
   },
   "devDependencies": {

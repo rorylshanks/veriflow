@@ -419,7 +419,7 @@ async function generateCaddyConfig() {
         "http_port": config.data_listen_port,
         "https_port": 2443,
         "servers": {
-          "srv0": {
+          "veriflow": {
             "listen": [
               ":" + config.data_listen_port
             ],
@@ -430,7 +430,8 @@ async function generateCaddyConfig() {
             "trusted_proxies": {
               "ranges": config.trusted_ranges || [],
               "source": "static"
-            }
+            },
+            "metrics": {}
           }
         }
       }

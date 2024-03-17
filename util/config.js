@@ -4,6 +4,7 @@ import fsSync from 'fs';
 import log from './logging.js';
 import reloadCaddy from './caddyModels.js';
 import chokidar from 'chokidar';
+import metrics from './metrics.js'
 
 let foundPort = false
 
@@ -23,8 +24,12 @@ async function reloadConfig() {
             currentConfig = tempConfig
         }
         reloadCaddy.generateCaddyConfig()
+        metrics.registry.veriflow_config_reloads_total.inc({result: "success"})
     } catch (error) {
         log.error({ message: "Failed to reload config", context: {error: error.message, stack: error.stack}})
+        metrics.registry.veriflow_config_reloads_total.inc({result: "failed"})
+    } finally {
+        metrics.registry.veriflow_config_last_reload_time.setToCurrentTime()
     }
 
 }
