@@ -216,7 +216,7 @@ It's essential to implement appropriate security measures when dealing with dyna
 - [ ] Add device-aware context
 - [ ] Add UI for debugging users
 - [x] Fix getRouteFromRequest to also match based on path
-- [ ] Add metrics for monitoring
+- [x] Add metrics for monitoring
 - [ ] Better logging
 
 See the [open issues](https://github.com/rorylshanks/veriflow/issues) for a full list of proposed features (and known issues).
