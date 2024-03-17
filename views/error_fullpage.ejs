@@ -9,28 +9,29 @@
     <div class="container">
         <div class="header">
             <div class="logo"><%- include('includes/logo'); %></div>
-            <% if(user){ %>
+
             <div class="menu">
                 <div class="hamburger-menu" onclick="toggleMenu()">☰</div>
                 <div class="menu-content" id="menu">
-                    <a>Logged in as <%= user %></a>
-                    <a href="<%= logout_url %>">Logout</a>
+                    <% if(show_error_code){ %>
+                        <a>Status Code: <%= error_code %></a>
+                    <% } %>
+                        <a>Request ID: <%= request_id %></a>
+
+                    <% if(user){ %>
+                        <a>Logged in as <%= user %></a>
+                        <hr>
+                        <a href="<%= logout_url %>">Logout of Veriflow</a>
+                    <% }%> 
                 </div>
             </div>
-            <% }%> 
+
         </div>
         <div class="content">
             <h1><%= header %></h1>
             <hr>
             <p class="error-message"><%= description %></p>
         </div>
-        <div class="footer">
-            <% if(show_error_code){ %>
-                <div><%= error_code %></div>
-             <% } %>
-            
-        </div>
-
     </div>
 </body>
 <footer>
