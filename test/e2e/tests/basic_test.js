@@ -1,4 +1,4 @@
-Feature('Login').retry(3);
+Feature('Login').retry(0);
 
 Scenario('Basic login test', async ({ I }) => {
     I.amOnPage('http://test-basic-login.localtest.me/get');
@@ -15,6 +15,7 @@ Scenario('HTTPS Upstream Test', async ({ I }) => {
 Scenario('Removing headers', async ({ I }) => {
     I.amOnPage('http://test-removing-headers.localtest.me/get');
     I.login();
+    I.see("user-agent")
     I.dontSee("x-veriflow-user-id")
 });
 
