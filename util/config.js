@@ -76,7 +76,7 @@ function getAuthListenPort() {
             authListenPort++
         } else {
             foundPort = authListenPort
-            log.info({ message: `Found port ${foundPort} for the auth service to listen on`})
+            log.debug({ message: `Found port ${foundPort} for the auth service to listen on`})
         }
     }
     return foundPort

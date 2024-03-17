@@ -130,8 +130,8 @@ async function saturateRoute(route, routeId) {
     "Host": [
       route.preserve_host_header ? "{http.request.host}" : "{http.reverse_proxy.upstream.host}"
     ],
-    "X-Veriflow-Request": [
-      "true"
+    "X-Veriflow-Request-Id": [
+      "{http.request.uuid}"
     ]
   }
   if (route.set_request_headers) {
@@ -233,6 +233,9 @@ async function saturateRoute(route, routeId) {
                       ],
                       "X-Veriflow-Route-Id": [
                         routeId
+                      ],
+                      "X-Veriflow-Request-Id": [
+                        "{http.request.uuid}"
                       ]
                     }
                   }
@@ -303,43 +306,60 @@ async function generateCaddyConfig() {
   var config = getConfig()
   var routes = await saturateAllRoutesFromConfig(config)
 
-  const E_LOOP_DETECTED_HTML = await errorpage.renderErrorPage(503, "ERR_LOOP_DETECTED")
-  const E_NOT_FOUND_HTML = await errorpage.renderErrorPage(404, "ERR_ROUTE_NOT_FOUND")
-
-  var circuitBreakerRoute = {
+  var requestIdRoute = {
     "handle": [
       {
-        "handler": "subroute",
-        "routes": [
-          {
-            "handle": [
-              {
-                "body": E_LOOP_DETECTED_HTML,
-                "close": true,
-                "handler": "static_response",
-                "status_code": 503,
-                "headers": {
-                  "Content-Type": [
-                    "text/html"
-                  ]
-                }
-              }
+        "handler": "headers",
+        "response": {
+          "set": {
+            "X-Veriflow-Request-Id": [
+              "{http.request.uuid}"
             ]
           }
-        ]
-      }
-    ],
-    "match": [
-      {
-        "header": {
-          "X-Veriflow-Request": [
-            "true"
-          ]
         }
       }
     ]
   }
-  routes.unshift(circuitBreakerRoute)
+  routes.unshift(requestIdRoute)
+
+  if (config.enable_circuit_breaker_route !== false) {
+    log.debug("Enabling circuit breaker route")
+    const E_LOOP_DETECTED_HTML = await errorpage.renderErrorPage(503, "ERR_LOOP_DETECTED")
+    var circuitBreakerRoute = {
+      "handle": [
+        {
+          "handler": "subroute",
+          "routes": [
+            {
+              "handle": [
+                {
+                  "body": E_LOOP_DETECTED_HTML,
+                  "close": true,
+                  "handler": "static_response",
+                  "status_code": 503,
+                  "headers": {
+                    "Content-Type": [
+                      "text/html"
+                    ]
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "match": [
+        {
+          "header": {
+            "X-Veriflow-Request-Id": [
+            ]
+          }
+        }
+      ]
+    }
+    routes.unshift(circuitBreakerRoute)
+  }
+
 
   var serviceUrl = new URL(config.service_url)
   var serviceRoute = {
@@ -371,6 +391,8 @@ async function generateCaddyConfig() {
     ],
     "terminal": true
   }
+
+  const E_NOT_FOUND_HTML = await errorpage.renderErrorPage(404, "ERR_ROUTE_NOT_FOUND")
   var defaultRoute = {
     "handle": [
       {

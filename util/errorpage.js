@@ -22,7 +22,7 @@ async function renderErrorPage(status_code, error_code_override, req) {
     var logo_image_src = config?.ui?.logo_image_src || false
     var page_title = config?.ui?.page_title || "Veriflow"
 
-    var description = "An internal server error occoured. Please try again."
+    var description = "An internal server error occurred. Please try again."
     var error_code = "ERR_INTERNAL_ERROR"
     if (status_code == 404) {
         header = "Page Not Found"
@@ -31,7 +31,7 @@ async function renderErrorPage(status_code, error_code_override, req) {
     }
     if (status_code == 403) {
         header = "Unauthorized"
-        description = "You are not authorized to acces the requested resource."
+        description = "You are not authorized to access the requested resource."
         error_code = "ERR_NOT_AUTHORIZED"
     }
     if (status_code == 503) {
@@ -62,7 +62,8 @@ async function renderErrorPage(status_code, error_code_override, req) {
         background_image_url: background_image_url,
         additional_css: additional_css,
         show_error_code: show_error_code,
-        logo_image_src: logo_image_src
+        logo_image_src: logo_image_src,
+        request_id: req?.headers["X-Veriflow-Request-Id"] || "{http.request.uuid}"
     });
     return html
 }

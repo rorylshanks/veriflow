@@ -2,9 +2,10 @@ import pino from 'pino';
 
 const log = pino();
 
-log.level = 10
+log.level = 30
 
 log.access = (action, route, user, req) => {
+    let reqId = req.headers["X-Veriflow-Request-Id"]
     let method = req.get("X-Forwarded-Method")
     let path = req.get("X-Forwarded-Path")
     let query = req.get("X-Forwarded-Query")
@@ -18,6 +19,7 @@ log.access = (action, route, user, req) => {
         userInfo.mail = user.mail
     }
     log.info({
+        reqId,
         action: action,
         request: {
             method,
@@ -35,6 +37,13 @@ log.access = (action, route, user, req) => {
         }
     })
 
+}
+
+log.infoWithContext = (req, message) => {
+    log.info({
+        reqId: req.headers["X-Veriflow-Request-Id"], 
+        ...message
+    })
 }
 
 export default log;
