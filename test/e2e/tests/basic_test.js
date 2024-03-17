@@ -60,7 +60,7 @@ Scenario('Testing Token Auth', async ({ I }) => {
 Scenario('Testing Unauthorized Flow', async ({ I }) => {
     I.amOnPage('http://test-unauthorized-login.localtest.me/');
     I.login()
-    I.see("ERR_NOT_AUTHORIZED")
+    I.see("Unauthorized")
 });
 
 Scenario('Advanced matchers test', async ({ I }) => {
@@ -68,7 +68,7 @@ Scenario('Advanced matchers test', async ({ I }) => {
     I.login();
     I.see("x-veriflow-user-id")
     I.amOnPage('http://test-advanced-matchers.localtest.me/should404');
-    I.see("ERR_ROUTE_NOT_FOUND")
+    I.see("Page Not Found")
 });
 
 Scenario('Dynamic Upstreams Test', async ({ I }) => {
