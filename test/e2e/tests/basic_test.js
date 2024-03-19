@@ -87,3 +87,11 @@ Scenario('Unauthenticated Access test', async ({ I }) => {
     I.amOnPage('http://test-unauthenticated-access.localtest.me/get');
     I.see("x-public-access")
 });
+
+Scenario('Multiple site access without login', async ({ I }) => {
+    I.amOnPage('http://test-basic-login.localtest.me/get');
+    I.login();
+    I.see("x-veriflow-user-id")
+    I.amOnPage('http://test-https-upstream.localtest.me/get');
+    I.see("x-veriflow-user-id")
+});
