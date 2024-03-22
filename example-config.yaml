@@ -1,4 +1,9 @@
 ---
+admin:
+  enable: true
+  allowed_groups:
+    - Veriflow Administrators
+
 ui:
   error_page_background: https://images.unsplash.com/photo-1702217172431-268c4f58e401?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&dl=hector-john-periquin-Vz156fJNZzM-unsplash.jpg
   error_page_footer_text: Internal Systems - Authorized Access Only
