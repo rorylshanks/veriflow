@@ -10,5 +10,16 @@
             "All Users",
             "test-header-group"
         ]
+    },
+    "denied@veriflow.dev": {
+        "displayName": "Veriflow Denied User",
+        "givenName": "Denied",
+        "preferredLanguage": "en",
+        "surname": "User",
+        "userPrincipalName": "denied@veriflow.dev",
+        "id": "denied@veriflow.dev",
+        "groups": [
+            "No Users"
+        ]
     }
 }

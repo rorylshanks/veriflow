@@ -16,32 +16,20 @@
 
 <div class="content">
   <div class="card">
-    <h5>Current Sessions</h5>
+    <h5>Current Users</h5>
     <hr>
     <table id="data">
       <thead>
         <tr>
-          <th>Session ID</th>
-          <th>Parent Session ID</th>
-          <th>Username</th>
-          <th>Accessed Host</th>
-          <th>Session Expires</th>
-          <th>Connecting IP</th>
-          <th>User Agent</th>
-          <th>Actions</th>
+          <th>User ID</th>
+          <th>Number Groups</th>
         </tr>
       </thead>
       <tbody>
-        <% for (const session of sessions) { %>
+        <% for (const user of users) { %>
           <tr>
-            <td><%= session.sessionId %></td>
-            <td><%= session?.details?.parent_session_id %></td>
-            <td><%= session.userId %></td>
-            <td><%= session?.details?.original_host %></td>
-            <td><%= session.cookie.expires %></td>
-            <td><%= session?.details?.remote_ip %></td>
-            <td><%= session?.details?.user_agent %></td>
-            <td><a href="<%= redirectBasePath %>/admin/sessions/kill?id=<%= session.sessionId %>"><button>Kill Session</button></a></td>
+            <td><a href="<%= redirectBasePath %>/admin/users/details?id=<%= user.id %>"><%= user.id %></a></td>
+            <td><%= user.groups.length %></td>
           </tr>
         <% } %>
 

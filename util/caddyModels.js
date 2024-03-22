@@ -304,18 +304,26 @@ async function saturateAllRoutesFromConfig(config) {
 async function generateCaddyConfig() {
   log.debug("Generating new caddy config")
   var config = getConfig()
-  if (config.enable_admin_panel !== false) {
+
+  if (config?.admin?.enable !== false && config?.admin?.allowed_groups) {
+    log.info("Admin panel will be enabled")
     var serviceUrl = config.service_url
     var baseRedirectUrl = getRedirectBasepath()
-    var adminUrl = new URL(`https://${serviceUrl}${baseRedirectUrl}/admin`)
+    var adminUrl = new URL(`${serviceUrl}${baseRedirectUrl}/admin`)
     var adminPanelRoute = {
       from: {
-        host: adminUrl.hostname,
-        path: adminUrl.pathname
+        host: [adminUrl.hostname],
+        path: [getRedirectBasepath() + "/admin/*"]
       },
-      to: "localhost:" + getAuthListenPort()
+      to: "http://localhost:" + getAuthListenPort(),
+      allowed_groups: config.admin.allowed_groups,
+      claims_headers: {
+        "X-Veriflow-Admin-Jwt": "jwt"
+      }
     }
+    config.policy.unshift(adminPanelRoute)
   }
+
   var routes = await saturateAllRoutesFromConfig(config)
 
   var requestIdRoute = {
@@ -381,7 +389,12 @@ async function generateCaddyConfig() {
           serviceUrl.hostname
         ],
         "path": [
-          
+          "/ping",
+          getRedirectBasepath() + "/verify", 
+          getRedirectBasepath() + "/set",
+          getRedirectBasepath() + "/logout", 
+          getRedirectBasepath() + "/auth", 
+          getRedirectBasepath() + "/callback"
         ]
       }
     ],

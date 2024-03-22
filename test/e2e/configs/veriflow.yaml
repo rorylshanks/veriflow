@@ -1,4 +1,8 @@
 ---
+admin:
+  enable: true
+  allowed_groups:
+    - All Users
 data_listen_port: 80
 metrics_listen_port: 9090
 service_url: http://veriflow.localtest.me
