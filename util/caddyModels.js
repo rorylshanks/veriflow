@@ -1,4 +1,4 @@
-import { getConfig, getAuthListenPort } from "./config.js"
+import { getConfig, getAuthListenPort, getRedirectBasepath } from "./config.js"
 import log from './logging.js';
 import { writeFile, stat } from "fs/promises";
 import axios from 'axios';
@@ -304,6 +304,18 @@ async function saturateAllRoutesFromConfig(config) {
 async function generateCaddyConfig() {
   log.debug("Generating new caddy config")
   var config = getConfig()
+  if (config.enable_admin_panel !== false) {
+    var serviceUrl = config.service_url
+    var baseRedirectUrl = getRedirectBasepath()
+    var adminUrl = new URL(`https://${serviceUrl}${baseRedirectUrl}/admin`)
+    var adminPanelRoute = {
+      from: {
+        host: adminUrl.hostname,
+        path: adminUrl.pathname
+      },
+      to: "localhost:" + getAuthListenPort()
+    }
+  }
   var routes = await saturateAllRoutesFromConfig(config)
 
   var requestIdRoute = {
@@ -367,6 +379,9 @@ async function generateCaddyConfig() {
       {
         "host": [
           serviceUrl.hostname
+        ],
+        "path": [
+          
         ]
       }
     ],

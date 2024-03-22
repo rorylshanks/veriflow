@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Veriflow Admin Dashboard</title>
+<link rel="stylesheet" href="https://cdn.datatables.net/2.0.2/css/dataTables.dataTables.min.css">
+<style>
+  body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    display: flex;
+    height: 100vh;
+    box-sizing: border-box;
+  }
+  .sidebar {
+    background-color: #f0f0f0;
+    padding: 20px;
+    width: 250px;
+    box-sizing: border-box;
+  }
+  .sidebar h4 {
+    margin-top: 0;
+  }
+  .sidebar a {
+    text-decoration: none;
+    color: #333;
+    display: block;
+    padding: 10px 0;
+  }
+  .sidebar a:hover {
+    background-color: #ddd;
+  }
+  .content {
+    flex-grow: 1;
+    padding: 20px;
+    box-sizing: border-box;
+    background-color: #fff;
+  }
+  .card {
+    background-color: #fff;
+    box-shadow: 0 0 5px rgba(0,0,0,0.1);
+    margin-bottom: 20px;
+    padding: 20px;
+  }
+  .card table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: small;
+  }
+  .card th, .card td {
+    text-align: left;
+    padding: 8px;
+    border-bottom: 1px solid #ddd;
+  }
+  .card th {
+    background-color: #f8f8f8;
+  }
+</style>
+</head>
+<body>
+
+<div class="sidebar">
+  <h4>Dashboard</h4>
+  <a href="#">Sessions</a>
+  <a href="#">Users</a>
+</div>
+
+<div class="content">
+  <div class="card">
+    <h5>Current Sessions</h5>
+    <table id="data">
+      <thead>
+        <tr>
+          <th>Session ID</th>
+          <th>Parent Session ID</th>
+          <th>Username</th>
+          <th>Accessed Host</th>
+          <th>Session Expires</th>
+          <th>Connecting IP</th>
+          <th>User Agent</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% for (const session of sessions) { %>
+          <tr>
+            <td><%= session.sessionId %></td>
+            <td><%= session.details.parent_session_id %></td>
+            <td><%= session.userId %></td>
+            <td><%= session.details.original_host %></td>
+            <td><%= session.cookie.expires %></td>
+            <td><%= session.details.remote_ip %></td>
+            <td><%= session.details.user_agent %></td>
+            <td><a href="kill?id=<%= session.sessionId %>"><button>Kill Session</button></a></td>
+          </tr>
+        <% } %>
+
+        <!-- Add more rows as needed -->
+      </tbody>
+    </table>
+  </div>
+</div>
+
+</body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdn.datatables.net/2.0.2/js/dataTables.min.js"></script>
+<script>
+  let table = new DataTable('#data');
+</script>
+</html>

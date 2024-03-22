@@ -5,7 +5,7 @@
   "main": "app.js",
   "type": "module",
   "scripts": {
-    "start": "npx nodemon app.js"
+    "start": "npx nodemon app.js -e ejs,js,css,html,jpg,png,scss"
   },
   "repository": {
     "type": "git",

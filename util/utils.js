@@ -18,6 +18,11 @@ function convertHeaderCase(str) {
       .join('-'); // Rejoin the words with hyphens
 }
 
+async function addSessionMetadataToRequest(req) {
+  var userAgent
+  var requestingIp
+}
+
 export default {
     urlToCaddyUpstream,
     convertHeaderCase

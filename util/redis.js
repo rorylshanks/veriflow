@@ -77,9 +77,15 @@ async function scanKeys(pattern) {
     return keys;
 }
 
+async function deleteSession(sessionId) {
+    await redis.del(`vfsession:${sessionId}`);
+}
+
 export default {
     getClient,
     getRedisConfig,
     getRedisStore,
-    logUserOutAllSessions
+    logUserOutAllSessions,
+    getAllSessions,
+    deleteSession
 }
