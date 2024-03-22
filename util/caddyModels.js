@@ -305,7 +305,7 @@ async function generateCaddyConfig() {
   log.debug("Generating new caddy config")
   var config = getConfig()
 
-  if (config?.admin?.enable !== false && config?.admin?.allowed_groups) {
+  if (config?.admin?.enable == true && config?.admin?.allowed_groups) {
     log.info("Admin panel will be enabled")
     var serviceUrl = config.service_url
     var baseRedirectUrl = getRedirectBasepath()
