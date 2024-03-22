@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('includes/admin_head'); %>
+</head>
+<body>
+
+<div class="sidebar">
+  <div class="logo">
+    <%- include('includes/logo'); %>
+  </div>
+  
+  <a href="<%= redirectBasePath %>/admin/sessions">Sessions</a>
+  <a href="<%= redirectBasePath %>/admin/users">Users</a>
+</div>
+
+<div class="content">
+  <div class="card">
+    <h5>Current Users</h5>
+    <hr>
+    <table id="data">
+      <thead>
+        <tr>
+          <th>User ID</th>
+          <th>Number Groups</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% for (const user of users) { %>
+          <tr>
+            <td><a href="<%= redirectBasePath %>/admin/users/details?id=<%= user.id %>"><%= user.id %></a></td>
+            <td><%= user.groups.length %></td>
+          </tr>
+        <% } %>
+
+        <!-- Add more rows as needed -->
+      </tbody>
+    </table>
+  </div>
+</div>
+
+</body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdn.datatables.net/2.0.2/js/dataTables.min.js"></script>
+<script>
+  let table = new DataTable('#data');
+</script>
+</html>
