@@ -30,9 +30,9 @@ async function renderErrorPage(status_code, error_code_override, req) {
         error_code = "ERR_NOT_FOUND"
     }
     if (status_code == 403) {
-        header = "Unauthorized"
-        description = "You are not authorized to access the requested resource."
-        error_code = "ERR_NOT_AUTHORIZED"
+        header = "Forbidden"
+        description = "You do not have permission to access the requested resource."
+        error_code = "ERR_ACCESS_DENIED"
     }
     if (status_code == 503) {
         header = "Service Unavailable"
@@ -63,7 +63,8 @@ async function renderErrorPage(status_code, error_code_override, req) {
         additional_css: additional_css,
         show_error_code: show_error_code,
         logo_image_src: logo_image_src,
-        request_id: req?.headers["X-Veriflow-Request-Id"] || "{http.request.uuid}"
+        request_id: req?.headers["X-Veriflow-Request-Id"] || "{http.request.uuid}",
+        request_host: req?.get("X-Forwarded-Host") || "{http.request.host}"
     });
     return html
 }

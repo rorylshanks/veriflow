@@ -60,7 +60,7 @@ Scenario('Testing Token Auth', async ({ I }) => {
 Scenario('Testing Unauthorized Flow', async ({ I }) => {
     I.amOnPage('http://test-unauthorized-login.localtest.me/');
     I.login()
-    I.see("Unauthorized")
+    I.see("Forbidden")
 });
 
 Scenario('Advanced matchers test', async ({ I }) => {
