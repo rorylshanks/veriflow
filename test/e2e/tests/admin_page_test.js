@@ -11,7 +11,7 @@ Scenario('I cant login to admin page as non admin', async ({ I }) => {
     I.fillField('login', 'denied@veriflow.dev');
     I.fillField('password', 'password');
     I.click('Login');
-    I.see("Unauthorized")
+    I.see("Forbidden")
 });
 
 
