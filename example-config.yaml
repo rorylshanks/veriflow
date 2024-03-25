@@ -9,6 +9,7 @@ ui:
   error_page_footer_text: Internal Systems - Authorized Access Only
   logo_image_src: https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Google_2015_logo.svg/1200px-Google_2015_logo.svg.png
   error_page_show_error_code: false
+  error_page_show_host: false
 
 data_listen_port: 2080
 metrics_listen_port: 9090

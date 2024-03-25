@@ -15,6 +15,10 @@ async function renderErrorPage(status_code, error_code_override, req) {
     var footer_text = config?.ui?.error_page_footer_text || "Veriflow Access Proxy"
     var background_image_url = config?.ui?.error_page_background || false
     var additional_css = config?.ui?.error_page_additional_css || false
+    var request_host = req?.get("X-Forwarded-Host") || "{http.request.host}"
+    if (config?.ui?.error_page_show_host === false) {
+        request_host = null
+    }
     var show_error_code = true
     if (config?.ui?.error_page_show_error_code != null){
         var show_error_code = config?.ui?.error_page_show_error_code
@@ -64,7 +68,7 @@ async function renderErrorPage(status_code, error_code_override, req) {
         show_error_code: show_error_code,
         logo_image_src: logo_image_src,
         request_id: req?.headers["X-Veriflow-Request-Id"] || "{http.request.uuid}",
-        request_host: req?.get("X-Forwarded-Host") || "{http.request.host}"
+        request_host: request_host
     });
     return html
 }
