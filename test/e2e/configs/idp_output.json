@@ -1,6 +1,7 @@
 {
     "test@veriflow.dev": {
         "displayName": "Veriflow Test User",
+        "vfsid": "dce03eb2-5f90-4ada-9966-4da4319a3c39",
         "givenName": "Test",
         "preferredLanguage": "en",
         "surname": "User",
@@ -12,6 +13,7 @@
         ]
     },
     "denied@veriflow.dev": {
+        "vfsid": "9e4990a0-c9d3-4b1f-acfd-ba1591f8003e",
         "displayName": "Veriflow Denied User",
         "givenName": "Denied",
         "preferredLanguage": "en",
