@@ -394,7 +394,8 @@ async function generateCaddyConfig() {
           getRedirectBasepath() + "/set",
           getRedirectBasepath() + "/logout", 
           getRedirectBasepath() + "/auth", 
-          getRedirectBasepath() + "/callback"
+          getRedirectBasepath() + "/callback",
+          config.jwks_path || getRedirectBasepath() + "/jwks.json"
         ]
       }
     ],
