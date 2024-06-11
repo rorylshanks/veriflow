@@ -3,6 +3,9 @@
         "Authorization": "ThisIsATestHeaderFromTheHeaderMapping",
         "X-test-Header": "another test"
     },
+    "All Users": {
+        "TestHeaderFromGroup": "MultipleHeader"
+    },
     "test-header-group": {
         "TestHeaderFromGroup": "TestHeaderFromGroup"
     },

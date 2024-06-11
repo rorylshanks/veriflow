@@ -39,6 +39,7 @@ Scenario('Testing Header Mapping', async ({ I }) => {
     I.see("ThisIsATestHeaderFromTheHeaderMapping")
     I.see("TestHeaderFromGroup")
     I.dontSee("TestAbsentHeaderFromGroup")
+    I.dontSee("MultipleHeader")
 });
 
 Scenario('Testing Header Mapping Inline', async ({ I }) => {
