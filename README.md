@@ -94,6 +94,7 @@ An example configuration file can be found in `example-config.yaml`. A breakdown
 - `idp_provider_url`: URL of the Identity Provider service.
 - `idp_refresh_directory_interval`: How often the directory information should be refreshed from the Identity Provider.
 - `idp_refresh_directory_timeout`: How long the system should wait for a directory refresh before timing out.
+- `idp_provider_token_claims_user_ttl`: For the `tokenclaims` IdP provider - Determines how long (in seconds) the user will exist in the Veriflow database before being deleted and requiring a re-auth. Default is 604800 (7 days)
 - `signing_key`: RSA private key for signing JWT tokens, encoded in base64.
 - `redirect_base_path`: Base path for redirection URLs. By default `/.veriflow`
 - `jwks_path`: Location of the JSON Web Key Set (JWKS) that can be called to get the public keys of the signing key.

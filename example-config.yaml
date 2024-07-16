@@ -29,6 +29,7 @@ idp_provider_user_id_claim: oid
 idp_provider_url: https://login.microsoftonline.com/00000000-1111-2222-3333-444444444444/v2.0
 idp_refresh_directory_interval: 10m
 idp_refresh_directory_timeout: 5m
+idp_provider_token_claims_user_ttl: 604800
 signing_key: "BASE64_ENCODED_RSA_PRIVATE_KEY"
 redirect_base_path: /.veriflow
 jwks_path: /.veriflow/jwks.json
