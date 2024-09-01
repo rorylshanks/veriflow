@@ -170,6 +170,7 @@ In this object:
 
 2. **Machine Token (`MachineToken`)**:
     - `"machine_token"`: This should be set to `true` to indicate that the token is a machine token, which is not associated with any user in the IdP.
+    - `"id"`: This is an ID that is used to lookup the token in the request header map headers, and also used as the user ID in any JWTs that are requested to be added.
     - `"valid_domains"`: An array of domain patterns where the machine token is valid. Unlike user tokens, this typically includes specific domains, such as `"api.example.com"` or `"*.internal.example.com"`. Domain patterns can be globbed using the [Picomatch](https://github.com/micromatch/picomatch) library.
     - `"valid_paths"`: An array of URL paths where the machine token is allowed to be used. This can include specific endpoints like `"/api/allow"` or directories like `"/internal/data"`. Path patterns can also be globbed using the [Picomatch](https://github.com/micromatch/picomatch) library, enabling flexible matching of URL paths.
     - `"valid_methods"`: An array of HTTP methods that are allowed for this token, such as `"GET"` or `"POST"`. Method patterns can also be globbed using the [Picomatch](https://github.com/micromatch/picomatch) library, allowing for flexible specification of allowed HTTP methods.
