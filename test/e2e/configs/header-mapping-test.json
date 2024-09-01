@@ -11,5 +11,8 @@
     },
     "test-header-group-absent": {
         "TestAbsentHeaderFromGroup": "TestAbsentHeaderFromGroup"
+    },
+    "c2bc52a6-58e6-435a-a84f-65e7c1b5bdf4": {
+        "Authorization": "Basic TestBasicAuthHeaderMapping"
     }
 }

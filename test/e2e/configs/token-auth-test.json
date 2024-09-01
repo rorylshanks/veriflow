@@ -3,6 +3,25 @@
         "userId": "test@veriflow.dev",
         "valid_domains": [
             "**"
+        ],
+        "valid_paths": [
+            "/"
+        ],
+        "valid_methods": [
+            "GET"
+        ]
+    },
+    "MachineToken": {
+        "id": "c2bc52a6-58e6-435a-a84f-65e7c1b5bdf4",
+        "machine_token": true,
+        "valid_domains": [
+            "**"
+        ],
+        "valid_paths": [
+            "/allow"
+        ],
+        "valid_methods": [
+            "GET"
         ]
     }
 }

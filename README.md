@@ -133,15 +133,30 @@ Within the policy configuration, several parameters can be set. See above for th
 
 ### External Token Authentication
 
-The JSON file specified in `token_auth_config_file` should contain an object for each token, structured as follows:
+The JSON file specified in `token_auth_config_file` should contain a configuration object for each token, structured to differentiate between user-based tokens and machine tokens. Below is an example structure:
 
 ```json
 {
-    "TOKEN": {
-        "userId": "userId",
-        "bypass_authz_check": false,
+    "UserToken": {
+        "userId": "exampleUserId",
         "valid_domains": [
             "**"
+        ]
+    },
+    "MachineToken": {
+        "id": "c2bc52a6-58e6-435a-a84f-65e7c1b5bdf4",
+        "machine_token": true,
+        "valid_domains": [
+            "api.example.com",
+            "*.internal.example.com"
+        ],
+        "valid_paths": [
+            "/api/allow",
+            "/internal/data"
+        ],
+        "valid_methods": [
+            "GET",
+            "POST"
         ]
     }
 }
@@ -149,12 +164,20 @@ The JSON file specified in `token_auth_config_file` should contain an object for
 
 In this object:
 
-- `"TOKEN"` is the token used for authorization.
-- `"userId"` is the ID of the user to whom the token belongs.
-- `"bypass_authz_check"` is used to bypass additional authz checks, by validating the user against the IdP. This is useful for machine accounts, however must be used with care.
-- `"valid_domains"` is an array of domain patterns where the token is valid. Patterns can be globbed using the [Picomatch](https://github.com/micromatch/picomatch) library. These patterns should match the `from:` section in the route configuration of the policy. The `"**"` pattern signifies that the token is valid on all domains.
+1. **User-based Token (`UserToken`)**:
+    - `"userId"`: This is the unique identifier of the user in the Identity Provider (IdP). The token is associated with this user, and additional authorization checks will be performed based on the user's permissions in the system.
+    - `"valid_domains"`: An array of domain patterns where this user’s token is valid. The `"**"` pattern indicates the token is valid for all domains, but you can specify specific domains or subdomains as needed. Domain patterns can be globbed using the [Picomatch](https://github.com/micromatch/picomatch) library, allowing for flexible domain matching.
 
-Please note, for security purposes, it is essential to keep the JSON file and the policy configuration secure and confidential, as they contain sensitive access information.
+2. **Machine Token (`MachineToken`)**:
+    - `"machine_token"`: This should be set to `true` to indicate that the token is a machine token, which is not associated with any user in the IdP.
+    - `"id"`: This is an ID that is used to lookup the token in the request header map headers, and also used as the user ID in any JWTs that are requested to be added.
+    - `"valid_domains"`: An array of domain patterns where the machine token is valid. Unlike user tokens, this typically includes specific domains, such as `"api.example.com"` or `"*.internal.example.com"`. Domain patterns can be globbed using the [Picomatch](https://github.com/micromatch/picomatch) library.
+    - `"valid_paths"`: An array of URL paths where the machine token is allowed to be used. This can include specific endpoints like `"/api/allow"` or directories like `"/internal/data"`. Path patterns can also be globbed using the [Picomatch](https://github.com/micromatch/picomatch) library, enabling flexible matching of URL paths.
+    - `"valid_methods"`: An array of HTTP methods that are allowed for this token, such as `"GET"` or `"POST"`. Method patterns can also be globbed using the [Picomatch](https://github.com/micromatch/picomatch) library, allowing for flexible specification of allowed HTTP methods.
+
+### Security Considerations
+
+Ensure that both the JSON configuration file and the policy configuration are kept secure, as they contain sensitive information that controls access to your services. Misconfiguration or unauthorized access to these files could lead to significant security vulnerabilities.
 
 ## Request Header Mapping
 
@@ -164,7 +187,7 @@ The JSON file specified in `request_header_map_file` should contain an object fo
 
 ```json
 {
-    "ENTER_USER_ID_OR_GROUP_ID_HERE": {
+    "ENTER_USER_ID_OR_GROUP_ID_OR TOKEN_ID_HERE": {
         "Authorization": "test",
         "X-test-Header": "another test"
     }
