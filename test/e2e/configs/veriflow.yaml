@@ -97,6 +97,18 @@ policy:
   allowed_groups:
   - All Users
 
+- from: http://test-token-auth-header-mapping.localtest.me
+  to: http://localhost:8080
+  token_auth_config_file: "/configs/token-auth-test.json"
+  token_auth_header: Authorization
+  token_auth_header_prefix: "Bearer "
+  token_auth_is_base64_encoded: false
+  request_header_map_file: "/configs/header-mapping-test.json"
+  request_header_map_headers:
+    - Authorization
+  allowed_groups:
+  - All Users
+
 - from:
     host:
     - test-advanced-matchers.localtest.me

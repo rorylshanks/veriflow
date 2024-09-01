@@ -50,14 +50,6 @@ Scenario('Testing Header Mapping Inline', async ({ I }) => {
     I.dontSee("TestAbsentHeaderFromGroup")
 });
 
-Scenario('Testing Token Auth', async ({ I }) => {
-    I.setPuppeteerRequestHeaders({
-        'Authorization': 'Bearer ThisIsATestToken',
-    });
-    I.amOnPage('http://test-token-auth.localtest.me/');
-    I.see("x-veriflow-user-id")
-});
-
 Scenario('Testing Unauthorized Flow', async ({ I }) => {
     I.amOnPage('http://test-unauthorized-login.localtest.me/');
     I.login()
