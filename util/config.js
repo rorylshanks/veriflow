@@ -56,7 +56,7 @@ function getConfig() {
 
 function getRouteFromRequest(req) {
     var config = getConfig()
-    var routeId = req.headers["X-Veriflow-Route-Id"]
+    var routeId = req.headers["x-veriflow-route-id"]
     if (!routeId) {
         log.error({ message: "No route ID included in request"})
         return null

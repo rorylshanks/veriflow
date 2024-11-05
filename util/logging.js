@@ -5,7 +5,7 @@ const log = pino();
 log.level = 30
 
 log.access = (action, route, user, req) => {
-    let reqId = req.headers["X-Veriflow-Request-Id"]
+    let reqId = req.headers["x-veriflow-request-id"]
     let method = req.get("X-Forwarded-Method")
     let path = req.get("X-Forwarded-Path")
     let query = req.get("X-Forwarded-Query")
