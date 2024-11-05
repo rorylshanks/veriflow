@@ -20,6 +20,22 @@ async function reloadConfig() {
     try {
         log.debug("Reloading configuration")
         var tempConfig = yaml.load(await fs.readFile(configFileLocation, 'utf8'));
+        for (var i in tempConfig.policy) {
+            var policy = tempConfig.policy[i]
+            tempConfig.external_auth = {}
+            if (policy.allow_external_auth === true) {
+                if (typeof policy.from === "string") {
+                    try {
+                        var parsedUrl = new URL(policy.from)
+                        tempConfig.external_auth[parsedUrl.hostname] = policy
+                        tempConfig.external_auth[parsedUrl.hostname].routeId = i
+                    } catch (error) {
+                        log.error({ message: "Failed to parse URL for external_auth for policy ", context: {error: error.message, stack: error.stack}})
+                        continue
+                    }
+                }
+            }
+        }
         if (tempConfig) {
             currentConfig = tempConfig
         }
@@ -40,18 +56,23 @@ function getConfig() {
 
 function getRouteFromRequest(req) {
     var config = getConfig()
-    var routeId = req.get("X-Veriflow-Route-Id")
+    var routeId = req.headers["X-Veriflow-Route-Id"]
     if (!routeId) {
-        log.error({ message: "No route ID included in request", context: {route, hostname: hostname, numRoutes: config.policy.length}})
+        log.error({ message: "No route ID included in request"})
         return null
     }
     var route = config.policy[routeId]
     if (route) {
         return route
     } else {
-        log.error({ message: "Failed to find route for hostname", context: {route, hostname: hostname, numRoutes: config.policy.length}})
+        log.error({ message: "Failed to find route for hostname"})
         return null
     }
+}
+
+function getExternalAuthRouteFromHostname(hostname) {
+    var config = getConfig()
+    return config.external_auth[hostname]
 }
 
 function getRedirectBasepath() {
@@ -87,5 +108,6 @@ export {
     getConfig,
     getRouteFromRequest,
     getRedirectBasepath,
-    getAuthListenPort
+    getAuthListenPort,
+    getExternalAuthRouteFromHostname
 };
