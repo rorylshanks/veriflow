@@ -1,4 +1,4 @@
-FROM caddy:2.7-alpine AS caddy
+FROM caddy:2.8-alpine AS caddy
 
 FROM node:slim
 RUN apt update && apt upgrade -y && apt install -y ca-certificates supervisor

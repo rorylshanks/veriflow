@@ -286,6 +286,13 @@ async function saturateAllRoutesFromConfig(config) {
   for (var routeId in routes) {
     try {
       var route = routes[routeId]
+      
+      // If route has allow_external_auth configured, do not template it into the caddy config
+      if (route.allow_external_auth === true) {
+        log.info({ message: "Route is configured for allow_external_auth, will not template into proxy config", route: route })
+        continue
+      }
+
       var saturatedRoute = await saturateRoute(route, routeId)
       renderedRoutes.push(saturatedRoute)
       // log.debug({ "message": "Added route", route })
@@ -395,6 +402,7 @@ async function generateCaddyConfig() {
           getRedirectBasepath() + "/logout", 
           getRedirectBasepath() + "/auth", 
           getRedirectBasepath() + "/callback",
+          getRedirectBasepath() + "/external_verify",
           config.jwks_path || getRedirectBasepath() + "/jwks.json"
         ]
       }
