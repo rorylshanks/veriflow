@@ -20,15 +20,19 @@ async function reloadConfig() {
     try {
         log.debug("Reloading configuration")
         var tempConfig = yaml.load(await fs.readFile(configFileLocation, 'utf8'));
-        for (var i in tempConfig.policy) {
-            var policy = tempConfig.policy[i]
-            tempConfig.external_auth = {}
+        if (tempConfig) {
+            currentConfig = tempConfig
+        }
+        reloadCaddy.generateCaddyConfig()
+        currentConfig.external_auth = {}
+        for (var i in currentConfig.policy) {
+            var policy = currentConfig.policy[i]
             if (policy.allow_external_auth === true) {
                 if (typeof policy.from === "string") {
                     try {
                         var parsedUrl = new URL(policy.from)
-                        tempConfig.external_auth[parsedUrl.hostname] = policy
-                        tempConfig.external_auth[parsedUrl.hostname].routeId = i
+                        currentConfig.external_auth[parsedUrl.hostname] = policy
+                        currentConfig.external_auth[parsedUrl.hostname].routeId = i
                     } catch (error) {
                         log.error({ message: "Failed to parse URL for external_auth for policy ", context: {error: error.message, stack: error.stack}})
                         continue
@@ -36,10 +40,6 @@ async function reloadConfig() {
                 }
             }
         }
-        if (tempConfig) {
-            currentConfig = tempConfig
-        }
-        reloadCaddy.generateCaddyConfig()
         metrics.registry.veriflow_config_reloads_total.inc({result: "success"})
     } catch (error) {
         log.error({ message: "Failed to reload config", context: {error: error.message, stack: error.stack}})
