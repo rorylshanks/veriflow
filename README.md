@@ -99,6 +99,7 @@ An example configuration file can be found in `example-config.yaml`. A breakdown
 - `redirect_base_path`: Base path for redirection URLs. By default `/.veriflow`
 - `jwks_path`: Location of the JSON Web Key Set (JWKS) that can be called to get the public keys of the signing key.
 - `trusted_ranges`: IP ranges that are trusted as being reverse proxies. Useful for running Veriflow behind proxies. 
+- `jwt_issuer_expires_in`: A time duration that indicates how long issued JWTs should be valid for. Default 10s
 - `policy`: Policy for access control. This includes:
     - `title`: Title of the policy.
     - `from`: Source URL or advanced matching policy For more details, see [docs/MATCHERS.md](docs/MATCHERS.md)
