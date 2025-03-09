@@ -15,6 +15,7 @@ exports.config = {
       url: 'http://localhost',
       show: false,
       windowSize: '1200x900',
+      args: ["--no-sandbox"]
     }
   },
   name: 'e2e',
