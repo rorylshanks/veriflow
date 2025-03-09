@@ -33,6 +33,7 @@ idp_provider_token_claims_user_ttl: 604800
 signing_key: "BASE64_ENCODED_RSA_PRIVATE_KEY"
 redirect_base_path: /.veriflow
 jwks_path: /.veriflow/jwks.json
+jwt_issuer_expires_in: 1m
 trusted_ranges: 
   - 192.168.60.0/24
   - 192.168.61.0/24

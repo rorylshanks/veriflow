@@ -10,13 +10,14 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: Run end-to-end tests
-      run: make test-e2e
+      run: |
+        make test-e2e
 
     - name: Archive E2E Test Output
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       if: always()
       with:
         name: e2e-test-screenshots

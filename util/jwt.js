@@ -11,7 +11,7 @@ async function createJWT(jsonPayload) {
         const token = jwt.sign(jsonPayload, key, { 
             algorithm: currentConfig.signing_key_algorithm || "RS256",
             keyid: currentConfig.kid_override || "0",
-            expiresIn: "1h",
+            expiresIn: currentConfig.jwt_issuer_expires_in || "10s",
             issuer: serviceUrl.hostname
         });
         return token;
