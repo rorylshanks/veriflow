@@ -1,6 +1,6 @@
 .PHONY: test-e2e
 test-e2e:
-	@npm i && cd test/e2e && npm i && npx puppeteer browsers install chrome
+	@npm i && cd test/e2e && npm i
 	docker compose -f docker-compose-test.yaml build
 	docker compose -f docker-compose-test.yaml up -d
 	@echo "Waiting for start..." && sleep 5
