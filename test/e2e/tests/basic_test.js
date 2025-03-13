@@ -100,3 +100,8 @@ Scenario('Retry When Auth Fails', async ({ I }) => {
     I.see("x-veriflow-user-id")
 });
 
+Scenario('I see an error when attempting to auth with no session', async ({ I }) => {
+    I.amOnPage('http://veriflow.localtest.me/.veriflow/callback?code=fakecode&state=fakestate&session_state=faksesessionstate')
+    I.see("Internal Server Error")
+});
+
