@@ -18,7 +18,7 @@ cookie_secret: "ThisIsAFakeCookieSecret"
 cookie_settings:
   sameSite: "none"
   secure: true
-  maxAge: 86400
+  maxAge: 86400000
 redis_connection_string: redis://127.0.0.1:6379
 idp_client_id: 00000000-1111-2222-3333-444444444444
 idp_client_secret: "FAKEFAKEFAKEaingaigaeW9eic4ok3oojietheeFAKEFAKEFAKE"
@@ -75,3 +75,11 @@ policy:
   jwt_override_audience: httpbin-test.localhost
   tls_client_cert_file: path/to/cert.pem
   tls_client_key_file: path/to/key.pem
+  form_auth:
+    url: https://n8n.int.com/login
+    method: POST
+    ttl: 1h
+    body:
+      username: user
+      password: password
+    
