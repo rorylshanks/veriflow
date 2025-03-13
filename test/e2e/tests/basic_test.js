@@ -54,6 +54,9 @@ Scenario('Testing Unauthorized Flow', async ({ I }) => {
     I.amOnPage('http://test-unauthorized-login.localtest.me/');
     I.login()
     I.see("Forbidden")
+    I.click(".hamburger-menu")
+    I.see("Request ID")
+    I.dontSee("fallback")
 });
 
 Scenario('Advanced matchers test', async ({ I }) => {
