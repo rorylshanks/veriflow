@@ -1,7 +1,7 @@
 import ejs from 'ejs';
 import path from 'path';
 import { getConfig, getRedirectBasepath } from '../util/config.js';
-
+import { randomUUID } from 'node:crypto'
 
 async function renderErrorPage(status_code, error_code_override, req) {
     var config = getConfig();
@@ -67,7 +67,7 @@ async function renderErrorPage(status_code, error_code_override, req) {
         additional_css: additional_css,
         show_error_code: show_error_code,
         logo_image_src: logo_image_src,
-        request_id: req?.headers["X-Veriflow-Request-Id"] || "{http.request.uuid}",
+        request_id: req?.headers["X-Veriflow-Request-Id"] || `fallback-${randomUUID()}`,
         request_host: request_host
     });
     return html
