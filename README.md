@@ -88,7 +88,7 @@ An example configuration file can be found in `example-config.yaml`. A breakdown
 - `idp_client_id`: Client ID for communication with the Identity Provider (IdP).
 - `idp_client_secret`: Secret key for authenticating with the Identity Provider (IdP).
 - `idp_tenant_id`: Identifier for the specific tenant in the Identity Provider's system.
-- `idp_provider`: Identity Provider system. Currently only support Microsoft Graph
+- `idp_provider`: Identity Provider system. Currently supports `msgraph`, `googleworkspace`, `tokenclaims`
 - `idp_provider_scope`: Authorization scopes for the Identity Provider.
 - `idp_provider_user_id_claim`: Claim used to identify the user in the Identity Provider.
 - `idp_provider_url`: URL of the Identity Provider service.

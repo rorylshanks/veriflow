@@ -75,7 +75,7 @@ policy:
   jwt_override_audience: httpbin-test.localhost
   tls_client_cert_file: path/to/cert.pem
   tls_client_key_file: path/to/key.pem
-  form_login:
+  form_auth:
     url: https://n8n.int.com/login
     method: POST
     ttl: 1h
