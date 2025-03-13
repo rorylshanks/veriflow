@@ -91,3 +91,12 @@ Scenario('Multiple site access without login', async ({ I }) => {
     I.amOnPage('http://test-https-upstream.localtest.me/get');
     I.see("x-veriflow-user-id")
 });
+
+Scenario('Retry When Auth Fails', async ({ I }) => {
+    I.amOnPage('http://test-basic-login.localtest.me/get');
+    I.login();
+    I.see("x-veriflow-user-id")
+    I.amOnPage('http://veriflow.localtest.me/.veriflow/callback?code=fakecode&state=fakestate&session_state=faksesessionstate')
+    I.see("x-veriflow-user-id")
+});
+
