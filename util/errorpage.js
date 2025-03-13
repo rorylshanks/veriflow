@@ -3,7 +3,7 @@ import path from 'path';
 import { getConfig, getRedirectBasepath } from '../util/config.js';
 import { randomUUID } from 'node:crypto'
 
-async function renderErrorPage(status_code, error_code_override, req) {
+async function renderErrorPage(status_code, error_code_override, req, host_override) {
     var config = getConfig();
     var redirectBasePath = getRedirectBasepath()
     var logoutUrlObj = new URL(`${config.service_url}${redirectBasePath}/logout`)
@@ -15,7 +15,7 @@ async function renderErrorPage(status_code, error_code_override, req) {
     var footer_text = config?.ui?.error_page_footer_text || "Veriflow Access Proxy"
     var background_image_url = config?.ui?.error_page_background || false
     var additional_css = config?.ui?.error_page_additional_css || false
-    var request_host = req?.get("X-Forwarded-Host") || "{http.request.host}"
+    var request_host = host_override || req?.get("X-Forwarded-Host") || logoutUrlObj.host
     if (config?.ui?.error_page_show_host === false) {
         request_host = null
     }
